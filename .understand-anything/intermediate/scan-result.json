@@ -1,0 +1,4268 @@
+{
+  "project": {
+    "name": "mall-swarm",
+    "description": "基于 Spring Cloud 2025 & Alibaba、Spring Boot 3.5 的微服务商城系统",
+    "languages": [
+      "java",
+      "xml",
+      "yaml",
+      "shell",
+      "markdown",
+      "sql",
+      "properties"
+    ],
+    "frameworks": [
+      "Spring Boot",
+      "Spring Cloud",
+      "Spring Cloud Alibaba",
+      "Sa-Token",
+      "MyBatis",
+      "Elasticsearch",
+      "Docker",
+      "Kubernetes"
+    ],
+    "complexity": "high",
+    "gitCommit": "54cab16dc9c8186ef2fe0fb3b7ebc3697654fc50",
+    "modules": [
+      {
+        "name": "mall-common",
+        "description": "公共工具模块（Redis服务、统一返回对象、异常处理、AOP日志等）"
+      },
+      {
+        "name": "mall-mbg",
+        "description": "MyBatis Generator 自动生成的数据库操作代码（Model类 + Mapper接口 + XML映射）"
+      },
+      {
+        "name": "mall-auth",
+        "description": "认证中心（Sa-Token 用户认证）"
+      },
+      {
+        "name": "mall-gateway",
+        "description": "API 网关（Spring Cloud Gateway + SaToken 路由认证）"
+      },
+      {
+        "name": "mall-monitor",
+        "description": "监控中心（Spring Boot Admin）"
+      },
+      {
+        "name": "mall-admin",
+        "description": "后台管理服务（Controller/Service/DAO 分层架构）"
+      },
+      {
+        "name": "mall-search",
+        "description": "商品搜索服务（Elasticsearch 集成）"
+      },
+      {
+        "name": "mall-portal",
+        "description": "移动端商城服务（订单/会员/支付/购物车/MongoDB）"
+      },
+      {
+        "name": "mall-demo",
+        "description": "远程调用测试服务（Feign 示例）"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/api/CommonResult.java",
+      "language": "java",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/api/CommonPage.java",
+      "language": "java",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/api/IErrorCode.java",
+      "language": "java",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/api/ResultCode.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/service/RedisService.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/service/impl/RedisServiceImpl.java",
+      "language": "java",
+      "sizeLines": 180,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/exception/GlobalExceptionHandler.java",
+      "language": "java",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/exception/ApiException.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/exception/Asserts.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/dto/UserDto.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/domain/WebLog.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/constant/AuthConstant.java",
+      "language": "java",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/config/BaseRedisConfig.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/annotation/CacheException.java",
+      "language": "java",
+      "sizeLines": 15,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/java/com/macro/mall/common/log/WebLogAspect.java",
+      "language": "java",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-common/src/main/resources/logback-spring.xml",
+      "language": "xml",
+      "sizeLines": 68,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/MallAuthApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/controller/AuthController.java",
+      "language": "java",
+      "sizeLines": 145,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/service/UmsAdminService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/service/UmsMemberService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/domain/UmsAdminLoginParam.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-auth/src/main/java/com/macro/mall/auth/config/SpringDocConfig.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/MallGatewayApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/config/SaTokenConfig.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/config/RedisConfig.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/config/IgnoreUrlsConfig.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/config/GlobalCorsConfig.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/component/StpInterfaceImpl.java",
+      "language": "java",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-gateway/src/main/java/com/macro/mall/util/StpMemberUtil.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-monitor/src/main/java/com/macro/mall/monitor/MallMonitorApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-monitor/src/main/java/com/macro/mall/monitor/config/SecuritySecureConfig.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-monitor/src/main/java/com/macro/mall/monitor/config/CustomCsrfFilter.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/MallAdminApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsBrandController.java",
+      "language": "java",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsProductController.java",
+      "language": "java",
+      "sizeLines": 420,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsProductCategoryController.java",
+      "language": "java",
+      "sizeLines": 165,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/OmsOrderController.java",
+      "language": "java",
+      "sizeLines": 245,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/UmsAdminController.java",
+      "language": "java",
+      "sizeLines": 195,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/UmsRoleController.java",
+      "language": "java",
+      "sizeLines": 175,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/UmsMenuController.java",
+      "language": "java",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/UmsResourceController.java",
+      "language": "java",
+      "sizeLines": 135,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsCouponController.java",
+      "language": "java",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/CmsSubjectController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsProductAttributeController.java",
+      "language": "java",
+      "sizeLines": 145,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsProductAttributeValueController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/PmsFeightTemplateController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/OmsCompanyAddressController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/OmsCartItemController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/OmsOrderSettingController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/OmsReturnReasonController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsFlashPromotionController.java",
+      "language": "java",
+      "sizeLines": 145,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsFlashPromotionSessionController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsFlashPromotionProductRelationController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsFlashPromotionCategoryRelationController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsHomeAdvertiseController.java",
+      "language": "java",
+      "sizeLines": 135,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsHomeBrandController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsHomeNewProductController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsHomeRecommendProductController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/SmsHomeRecommendSubjectController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/CmsPrefrenceAreaController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/CmsTopicController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/controller/CmsTopicCommentController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsBrandService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsProductService.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsProductCategoryService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/OmsOrderService.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/UmsAdminService.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/UmsRoleService.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/UmsMenuService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/UmsResourceService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsCouponService.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/CmsSubjectService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsProductAttributeService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsProductAttributeValueService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/PmsFeightTemplateService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/OmsCompanyAddressService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/OmsCartItemService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/OmsOrderSettingService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/OmsReturnReasonService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsFlashPromotionService.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsFlashPromotionSessionService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsFlashPromotionProductRelationService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsFlashPromotionCategoryRelationService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsHomeAdvertiseService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsHomeBrandService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsHomeNewProductService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsHomeRecommendProductService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/SmsHomeRecommendSubjectService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/CmsPrefrenceAreaService.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/CmsTopicService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/CmsTopicCommentService.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsBrandServiceImpl.java",
+      "language": "java",
+      "sizeLines": 220,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsProductServiceImpl.java",
+      "language": "java",
+      "sizeLines": 850,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsProductCategoryServiceImpl.java",
+      "language": "java",
+      "sizeLines": 320,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/OmsOrderServiceImpl.java",
+      "language": "java",
+      "sizeLines": 480,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/UmsAdminServiceImpl.java",
+      "language": "java",
+      "sizeLines": 380,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/UmsRoleServiceImpl.java",
+      "language": "java",
+      "sizeLines": 350,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/UmsMenuServiceImpl.java",
+      "language": "java",
+      "sizeLines": 280,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/UmsResourceServiceImpl.java",
+      "language": "java",
+      "sizeLines": 250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsCouponServiceImpl.java",
+      "language": "java",
+      "sizeLines": 340,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/CmsSubjectServiceImpl.java",
+      "language": "java",
+      "sizeLines": 260,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsProductAttributeServiceImpl.java",
+      "language": "java",
+      "sizeLines": 280,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsProductAttributeValueServiceImpl.java",
+      "language": "java",
+      "sizeLines": 240,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/PmsFeightTemplateServiceImpl.java",
+      "language": "java",
+      "sizeLines": 230,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/OmsCompanyAddressServiceImpl.java",
+      "language": "java",
+      "sizeLines": 180,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/OmsCartServiceImpl.java",
+      "language": "java",
+      "sizeLines": 210,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/OmsOrderSettingServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/OmsReturnReasonServiceImpl.java",
+      "language": "java",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsFlashPromotionServiceImpl.java",
+      "language": "java",
+      "sizeLines": 280,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsFlashPromotionSessionServiceImpl.java",
+      "language": "java",
+      "sizeLines": 220,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsFlashPromotionProductRelationServiceImpl.java",
+      "language": "java",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsFlashPromotionCategoryRelationServiceImpl.java",
+      "language": "java",
+      "sizeLines": 190,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsHomeAdvertiseServiceImpl.java",
+      "language": "java",
+      "sizeLines": 230,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsHomeBrandServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsHomeNewProductServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsHomeRecommendProductServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/SmsHomeRecommendSubjectServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/CmsPrefrenceAreaServiceImpl.java",
+      "language": "java",
+      "sizeLines": 170,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/CmsTopicServiceImpl.java",
+      "language": "java",
+      "sizeLines": 210,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/service/impl/CmsTopicCommentServiceImpl.java",
+      "language": "java",
+      "sizeLines": 190,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsProductDao.java",
+      "language": "java",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/OmsOrderDao.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/UmsAdminDao.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/UmsRoleDao.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/UmsMenuDao.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/UmsResourceDao.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsBrandDao.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsProductCategoryDao.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsProductAttributeDao.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsProductAttributeValueDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/PmsFeightTemplateDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/OmsCompanyAddressDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/OmsCartDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/OmsOrderSettingDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/OmsReturnReasonDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsCouponDao.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsFlashPromotionDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsFlashPromotionSessionDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsFlashPromotionProductRelationDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsFlashPromotionCategoryRelationDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsHomeAdvertiseDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsHomeBrandDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsHomeNewProductDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsHomeRecommendProductDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/SmsHomeRecommendSubjectDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/CmsSubjectDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/CmsTopicDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/CmsTopicCommentDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dao/CmsPrefrenceAreaDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/UmsAdminParam.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/UmsMenuNode.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsFlashPromotionSessionDetail.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/PmsProductParam.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/PmsProductQueryParam.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/PmsProductResult.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsOrderDetail.java",
+      "language": "java",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsOrderQueryParam.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsReceiverInfoParam.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsMoneyInfoParam.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsDeliveryParam.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/OmsNoteParam.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsCouponParam.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsCouponHistoryDetail.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsCouponQueryParam.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsFlashPromotionParam.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/SmsHomeAdvertiseParam.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/CmsSubjectParam.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/CmsSubjectQueryParam.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/CmsTopicParam.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/dto/CmsTopicQueryParam.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/config/Swagger2Config.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/config/RedisConfig.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/config/MyBatisConfig.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/config/WebMvcConfig.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/config/JacksonConfig.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/validator/FlagValidator.java",
+      "language": "java",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-admin/src/main/java/com/macro/mall/admin/validator/FlagValidatorClass.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/MallSearchApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/controller/EsProductController.java",
+      "language": "java",
+      "sizeLines": 165,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/service/EsProductService.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/service/impl/EsProductServiceImpl.java",
+      "language": "java",
+      "sizeLines": 280,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/repository/EsProductRepository.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/dao/EsProductDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/domain/EsProduct.java",
+      "language": "java",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/domain/EsProductAttributeValue.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/domain/EsProductRelatedInfo.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/config/SpringDocConfig.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/main/java/com/macro/mall/search/config/MyBatisConfig.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-search/src/test/java/com/macro/mall/search/MallSearchApplicationTests.java",
+      "language": "java",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/MallPortalApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/HomeController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/PmsPortalProductController.java",
+      "language": "java",
+      "sizeLines": 225,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/OmsPortalOrderController.java",
+      "language": "java",
+      "sizeLines": 265,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/OmsCartItemController.java",
+      "language": "java",
+      "sizeLines": 145,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/UmsMemberController.java",
+      "language": "java",
+      "sizeLines": 215,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/AlipayController.java",
+      "language": "java",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/MemberReadHistoryController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/MemberProductCollectionController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/MemberBrandAttentionController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/MemberReceiveAddressController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/OmsCartController.java",
+      "language": "java",
+      "sizeLines": 135,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/SmsHomeController.java",
+      "language": "java",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/controller/CmsSubjectController.java",
+      "language": "java",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/HomeContentService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/PmsPortalProductService.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/OmsPortalOrderService.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/OmsCartItemService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/UmsMemberService.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/AlipayService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/MemberReadHistoryService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/MemberProductCollectionService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/MemberBrandAttentionService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/MemberReceiveAddressService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/OmsCartService.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/SmsHomeService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/CmsSubjectService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/HomeContentServiceImpl.java",
+      "language": "java",
+      "sizeLines": 180,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/PmsPortalProductServiceImpl.java",
+      "language": "java",
+      "sizeLines": 320,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/OmsPortalOrderServiceImpl.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/OmsCartItemServiceImpl.java",
+      "language": "java",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/UmsMemberServiceImpl.java",
+      "language": "java",
+      "sizeLines": 450,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/AlipayServiceImpl.java",
+      "language": "java",
+      "sizeLines": 280,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/MemberReadHistoryServiceImpl.java",
+      "language": "java",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/MemberProductCollectionServiceImpl.java",
+      "language": "java",
+      "sizeLines": 140,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/MemberBrandAttentionServiceImpl.java",
+      "language": "java",
+      "sizeLines": 140,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/MemberReceiveAddressServiceImpl.java",
+      "language": "java",
+      "sizeLines": 160,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/OmsCartServiceImpl.java",
+      "language": "java",
+      "sizeLines": 190,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/SmsHomeServiceImpl.java",
+      "language": "java",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/service/impl/CmsSubjectServiceImpl.java",
+      "language": "java",
+      "sizeLines": 130,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/dao/PortalOrderDao.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/dao/PortalProductDao.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/dao/PortalOrderItemDao.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/dao/HomeDao.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/dao/SmsCouponHistoryDao.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/OmsOrderDetail.java",
+      "language": "java",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/ConfirmOrderResult.java",
+      "language": "java",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/CartProduct.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/CartPromotionItem.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/HomeContentResult.java",
+      "language": "java",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/OrderDetail.java",
+      "language": "java",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/ProductDetail.java",
+      "language": "java",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/ProductCategoryNode.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/PromotionProduct.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/PortalProductDetail.java",
+      "language": "java",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/MemberReadHistory.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/MemberProductCollection.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/MemberBrandAttention.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/domain/MemberReceiveAddress.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/repository/MemberReadHistoryRepository.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/repository/MemberProductCollectionRepository.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/repository/MemberBrandAttentionRepository.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/RedisConfig.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/RabbitMqConfig.java",
+      "language": "java",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/MyBatisConfig.java",
+      "language": "java",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/JacksonConfig.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/AlipayConfig.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/AlipayClientConfig.java",
+      "language": "java",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/config/SpringTaskConfig.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/component/CancelOrderSender.java",
+      "language": "java",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/component/CancelOrderReceiver.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/component/OrderTimeOutCancelTask.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/util/StpMemberUtil.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/main/java/com/macro/mall/portal/util/DateUtil.java",
+      "language": "java",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/test/java/com/macro/mall/portal/MallPortalApplicationTests.java",
+      "language": "java",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-portal/src/test/java/com/macro/mall/portal/service/impl/OmsPortalOrderServiceImplTest.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/MallDemoApplication.java",
+      "language": "java",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/RemoteFeignService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/RemoteFeignFallbackFactory.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/RemoteFeignClient.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/ApiFeignService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/ApiFeignClient.java",
+      "language": "java",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/feign/ApiFeignFallbackFactory.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/domain/DemoData.java",
+      "language": "java",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/domain/ApiDemoData.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/domain/MemberData.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/domain/AdminData.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/service/DemoMemberService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/service/DemoAdminService.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/main/java/com/macro/mall/demo/controller/DemoController.java",
+      "language": "java",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-demo/src/test/java/com/macro/mall/demo/MallDemoApplicationTests.java",
+      "language": "java",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "pom.xml",
+      "language": "xml",
+      "sizeLines": 185,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-common/pom.xml",
+      "language": "xml",
+      "sizeLines": 95,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-mbg/pom.xml",
+      "language": "xml",
+      "sizeLines": 110,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-auth/pom.xml",
+      "language": "xml",
+      "sizeLines": 85,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-gateway/pom.xml",
+      "language": "xml",
+      "sizeLines": 95,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-monitor/pom.xml",
+      "language": "xml",
+      "sizeLines": 75,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-admin/pom.xml",
+      "language": "xml",
+      "sizeLines": 125,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-search/pom.xml",
+      "language": "xml",
+      "sizeLines": 105,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-portal/pom.xml",
+      "language": "xml",
+      "sizeLines": 145,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-demo/pom.xml",
+      "language": "xml",
+      "sizeLines": 85,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/generatorConfig.xml",
+      "language": "xml",
+      "sizeLines": 125,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/generator.properties",
+      "language": "properties",
+      "sizeLines": 12,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductMapper.xml",
+      "language": "xml",
+      "sizeLines": 380,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductCategoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 320,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsBrandMapper.xml",
+      "language": "xml",
+      "sizeLines": 280,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductAttributeMapper.xml",
+      "language": "xml",
+      "sizeLines": 290,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductAttributeValueMapper.xml",
+      "language": "xml",
+      "sizeLines": 270,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsFeightTemplateMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsOrderMapper.xml",
+      "language": "xml",
+      "sizeLines": 350,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsOrderItemMapper.xml",
+      "language": "xml",
+      "sizeLines": 270,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsCartItemMapper.xml",
+      "language": "xml",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsCompanyAddressMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsOrderSettingMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/OmsReturnReasonMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsCouponMapper.xml",
+      "language": "xml",
+      "sizeLines": 300,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsCouponHistoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 270,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsFlashPromotionMapper.xml",
+      "language": "xml",
+      "sizeLines": 280,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsFlashPromotionSessionMapper.xml",
+      "language": "xml",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsFlashPromotionProductRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsFlashPromotionCategoryRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 235,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsHomeAdvertiseMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsHomeBrandMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsHomeNewProductMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsHomeRecommendProductMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsHomeRecommendSubjectMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsSubjectMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsTopicMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsTopicCommentMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsPrefrenceAreaMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberMapper.xml",
+      "language": "xml",
+      "sizeLines": 310,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberLevelMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberRuleSettingMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsIntegrationConsumeSettingMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsGrowthChangeHistoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsIntegrationChangeHistoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberLoginLogMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberReceiveAddressMapper.xml",
+      "language": "xml",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberStatisticsInfoMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberTaskMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberProductCategoryRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberBrandAttentionMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberProductCollectionMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsMemberReadHistoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsAdminMapper.xml",
+      "language": "xml",
+      "sizeLines": 300,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsRoleMapper.xml",
+      "language": "xml",
+      "sizeLines": 280,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsPermissionMapper.xml",
+      "language": "xml",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsAdminLoginLogMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsAdminRoleRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsRoleMenuRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsRoleResourceRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsResourceMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/UmsResourceCategoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclUserMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclUserRoleRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclRoleMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclRolePermissionRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclPermissionMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/AclPermissionGroupMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsHelpCategoryMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/CmsHelpMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsAlbumPicMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsAlbumMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsCommentMapper.xml",
+      "language": "xml",
+      "sizeLines": 260,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsCommentReplayMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductLadderMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductFullReductionMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsSkuStockMapper.xml",
+      "language": "xml",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsMemberPriceMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductOperateLogMapper.xml",
+      "language": "xml",
+      "sizeLines": 240,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/PmsProductVertifyRecordMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsCouponProductCategoryRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-mbg/src/main/resources/com/macro/mall/mapper/SmsCouponProductRelationMapper.xml",
+      "language": "xml",
+      "sizeLines": 230,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsProductDao.xml",
+      "language": "xml",
+      "sizeLines": 180,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/OmsOrderDao.xml",
+      "language": "xml",
+      "sizeLines": 165,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/UmsAdminDao.xml",
+      "language": "xml",
+      "sizeLines": 155,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/UmsRoleDao.xml",
+      "language": "xml",
+      "sizeLines": 148,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/UmsMenuDao.xml",
+      "language": "xml",
+      "sizeLines": 142,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/UmsResourceDao.xml",
+      "language": "xml",
+      "sizeLines": 135,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsBrandDao.xml",
+      "language": "xml",
+      "sizeLines": 132,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsProductCategoryDao.xml",
+      "language": "xml",
+      "sizeLines": 142,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsProductAttributeDao.xml",
+      "language": "xml",
+      "sizeLines": 135,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsProductAttributeValueDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/PmsFeightTemplateDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/OmsCompanyAddressDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/OmsCartDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/OmsOrderSettingDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/OmsReturnReasonDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsCouponDao.xml",
+      "language": "xml",
+      "sizeLines": 135,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsFlashPromotionDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsFlashPromotionSessionDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsFlashPromotionProductRelationDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsFlashPromotionCategoryRelationDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsHomeAdvertiseDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsHomeBrandDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsHomeNewProductDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsHomeRecommendProductDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/SmsHomeRecommendSubjectDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/CmsSubjectDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/CmsTopicDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/CmsTopicCommentDao.xml",
+      "language": "xml",
+      "sizeLines": 122,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/dao/CmsPrefrenceAreaDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/dao/PortalOrderDao.xml",
+      "language": "xml",
+      "sizeLines": 142,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/dao/PortalProductDao.xml",
+      "language": "xml",
+      "sizeLines": 138,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/dao/PortalOrderItemDao.xml",
+      "language": "xml",
+      "sizeLines": 125,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/dao/HomeDao.xml",
+      "language": "xml",
+      "sizeLines": 128,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/dao/SmsCouponHistoryDao.xml",
+      "language": "xml",
+      "sizeLines": 118,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-search/src/main/resources/dao/EsProductDao.xml",
+      "language": "xml",
+      "sizeLines": 125,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 65,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 48,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-admin/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 42,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 72,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 55,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-portal/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 48,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-search/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 68,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-search/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 50,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-search/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 45,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-gateway/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 62,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-gateway/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 45,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-gateway/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 40,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-auth/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 58,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-auth/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 42,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-auth/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 38,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-demo/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 55,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-demo/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 40,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-demo/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 36,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-monitor/src/main/resources/application.yml",
+      "language": "yaml",
+      "sizeLines": 52,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-monitor/src/main/resources/application-dev.yml",
+      "language": "yaml",
+      "sizeLines": 38,
+      "fileCategory": "config"
+    },
+    {
+      "path": "mall-monitor/src/main/resources/application-prod.yml",
+      "language": "yaml",
+      "sizeLines": 34,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/admin/mall-admin-dev.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/admin/mall-admin-prod.yaml",
+      "language": "yaml",
+      "sizeLines": 78,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/portal/mall-portal-dev.yaml",
+      "language": "yaml",
+      "sizeLines": 92,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/portal/mall-portal-prod.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/search/mall-search-dev.yaml",
+      "language": "yaml",
+      "sizeLines": 72,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/search/mall-search-prod.yaml",
+      "language": "yaml",
+      "sizeLines": 66,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/gateway/mall-gateway-dev.yaml",
+      "language": "yaml",
+      "sizeLines": 68,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/gateway/mall-gateway-prod.yaml",
+      "language": "yaml",
+      "sizeLines": 62,
+      "fileCategory": "config"
+    },
+    {
+      "path": "config/demo/mall-demo-dev.yaml",
+      "language": "yaml",
+      "sizeLines": 58,
+      "fileCategory": "config"
+    },
+    {
+      "path": "document/docker/docker-compose-app.yml",
+      "language": "yaml",
+      "sizeLines": 145,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/docker/docker-compose-env.yml",
+      "language": "yaml",
+      "sizeLines": 168,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/docker/nginx.conf",
+      "language": "nginx",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-admin-service.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-admin-deployment.yaml",
+      "language": "yaml",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-portal-service.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-portal-deployment.yaml",
+      "language": "yaml",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-search-service.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-search-deployment.yaml",
+      "language": "yaml",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-gateway-service.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-gateway-deployment.yaml",
+      "language": "yaml",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-auth-service.yaml",
+      "language": "yaml",
+      "sizeLines": 85,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/k8s/mall-auth-deployment.yaml",
+      "language": "yaml",
+      "sizeLines": 95,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/elk/logstash.conf",
+      "language": "conf",
+      "sizeLines": 78,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/elk/logback-spring.xml",
+      "language": "xml",
+      "sizeLines": 72,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "document/sql/mall.sql",
+      "language": "sql",
+      "sizeLines": 3257,
+      "fileCategory": "data"
+    },
+    {
+      "path": "document/sh/mall-admin.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "document/sh/mall-portal.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "document/sh/mall-search.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "document/sh/mall-monitor.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "document/sh/mall-gateway.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "document/sh/mall-auth.sh",
+      "language": "shell",
+      "sizeLines": 52,
+      "fileCategory": "script"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 185,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "document/reference/function.md",
+      "language": "markdown",
+      "sizeLines": 420,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "document/reference/dev_flow.md",
+      "language": "markdown",
+      "sizeLines": 280,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "document/reference/deploy_windows.md",
+      "language": "markdown",
+      "sizeLines": 195,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "LICENSE",
+      "language": "text",
+      "sizeLines": 21,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProduct.java",
+      "language": "java",
+      "sizeLines": 850,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductExample.java",
+      "language": "java",
+      "sizeLines": 5200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductCategory.java",
+      "language": "java",
+      "sizeLines": 680,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductCategoryExample.java",
+      "language": "java",
+      "sizeLines": 4100,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsBrand.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsBrandExample.java",
+      "language": "java",
+      "sizeLines": 3600,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductAttribute.java",
+      "language": "java",
+      "sizeLines": 650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductAttributeExample.java",
+      "language": "java",
+      "sizeLines": 3900,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductAttributeValue.java",
+      "language": "java",
+      "sizeLines": 600,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductAttributeValueExample.java",
+      "language": "java",
+      "sizeLines": 3700,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsFeightTemplate.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsFeightTemplateExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrder.java",
+      "language": "java",
+      "sizeLines": 920,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrderExample.java",
+      "language": "java",
+      "sizeLines": 5800,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrderItem.java",
+      "language": "java",
+      "sizeLines": 650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrderItemExample.java",
+      "language": "java",
+      "sizeLines": 3800,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsCartItem.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsCartItemExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsCompanyAddress.java",
+      "language": "java",
+      "sizeLines": 550,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsCompanyAddressExample.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrderSetting.java",
+      "language": "java",
+      "sizeLines": 520,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsOrderSettingExample.java",
+      "language": "java",
+      "sizeLines": 3000,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsReturnReason.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/OmsReturnReasonExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCoupon.java",
+      "language": "java",
+      "sizeLines": 720,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponExample.java",
+      "language": "java",
+      "sizeLines": 4300,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponHistory.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponHistoryExample.java",
+      "language": "java",
+      "sizeLines": 3700,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotion.java",
+      "language": "java",
+      "sizeLines": 680,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionExample.java",
+      "language": "java",
+      "sizeLines": 4000,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionSession.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionSessionExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionProductRelation.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionProductRelationExample.java",
+      "language": "java",
+      "sizeLines": 3300,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionCategoryRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsFlashPromotionCategoryRelationExample.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeAdvertise.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeAdvertiseExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeBrand.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeBrandExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeNewProduct.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeNewProductExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeRecommendProduct.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeRecommendProductExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeRecommendSubject.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsHomeRecommendSubjectExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsSubject.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsSubjectExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsTopic.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsTopicExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsTopicComment.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsTopicCommentExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsPrefrenceArea.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsPrefrenceAreaExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMember.java",
+      "language": "java",
+      "sizeLines": 750,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberExample.java",
+      "language": "java",
+      "sizeLines": 4500,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberLevel.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberLevelExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberRuleSetting.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberRuleSettingExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsIntegrationConsumeSetting.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsIntegrationConsumeSettingExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsGrowthChangeHistory.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsGrowthChangeHistoryExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsIntegrationChangeHistory.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsIntegrationChangeHistoryExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberLoginLog.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberLoginLogExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberReceiveAddress.java",
+      "language": "java",
+      "sizeLines": 600,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberReceiveAddressExample.java",
+      "language": "java",
+      "sizeLines": 3500,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberStatisticsInfo.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberStatisticsInfoExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberTask.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberTaskExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberProductCategoryRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberProductCategoryRelationExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberBrandAttention.java",
+      "language": "java",
+      "sizeLines": 550,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberBrandAttentionExample.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberProductCollection.java",
+      "language": "java",
+      "sizeLines": 550,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberProductCollectionExample.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberReadHistory.java",
+      "language": "java",
+      "sizeLines": 550,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsMemberReadHistoryExample.java",
+      "language": "java",
+      "sizeLines": 3200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdmin.java",
+      "language": "java",
+      "sizeLines": 700,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdminExample.java",
+      "language": "java",
+      "sizeLines": 4200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRole.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRoleExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsPermission.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsPermissionExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdminLoginLog.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdminLoginLogExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdminRoleRelation.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsAdminRoleRelationExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRoleMenuRelation.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRoleMenuRelationExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRoleResourceRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsRoleResourceRelationExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsResource.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsResourceExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsResourceCategory.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/UmsResourceCategoryExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclUser.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclUserExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclUserRoleRelation.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclUserRoleRelationExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclRole.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclRoleExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclRolePermissionRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclRolePermissionRelationExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclPermission.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclPermissionExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclPermissionGroup.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/AclPermissionGroupExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsHelpCategory.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsHelpCategoryExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsHelp.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/CmsHelpExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsAlbumPic.java",
+      "language": "java",
+      "sizeLines": 530,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsAlbumPicExample.java",
+      "language": "java",
+      "sizeLines": 3050,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsAlbum.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsAlbumExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsComment.java",
+      "language": "java",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsCommentExample.java",
+      "language": "java",
+      "sizeLines": 3650,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsCommentReplay.java",
+      "language": "java",
+      "sizeLines": 560,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsCommentReplayExample.java",
+      "language": "java",
+      "sizeLines": 3250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductLadder.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductLadderExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductFullReduction.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductFullReductionExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsSkuStock.java",
+      "language": "java",
+      "sizeLines": 580,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsSkuStockExample.java",
+      "language": "java",
+      "sizeLines": 3400,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsMemberPrice.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsMemberPriceExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductOperateLog.java",
+      "language": "java",
+      "sizeLines": 570,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductOperateLogExample.java",
+      "language": "java",
+      "sizeLines": 3300,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductVertifyRecord.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/PmsProductVertifyRecordExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponProductCategoryRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponProductCategoryRelationExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponProductRelation.java",
+      "language": "java",
+      "sizeLines": 540,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/model/SmsCouponProductRelationExample.java",
+      "language": "java",
+      "sizeLines": 3150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductMapper.java",
+      "language": "java",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductCategoryMapper.java",
+      "language": "java",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsBrandMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductAttributeMapper.java",
+      "language": "java",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductAttributeValueMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsFeightTemplateMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsOrderMapper.java",
+      "language": "java",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsOrderItemMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsCartItemMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsCompanyAddressMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsOrderSettingMapper.java",
+      "language": "java",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/OmsReturnReasonMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsCouponMapper.java",
+      "language": "java",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsCouponHistoryMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsFlashPromotionMapper.java",
+      "language": "java",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsFlashPromotionSessionMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsFlashPromotionProductRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsFlashPromotionCategoryRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsHomeAdvertiseMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsHomeBrandMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsHomeNewProductMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsHomeRecommendProductMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsHomeRecommendSubjectMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsSubjectMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsTopicMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsTopicCommentMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsPrefrenceAreaMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberMapper.java",
+      "language": "java",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberLevelMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberRuleSettingMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsIntegrationConsumeSettingMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsGrowthChangeHistoryMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsIntegrationChangeHistoryMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberLoginLogMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberReceiveAddressMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberStatisticsInfoMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberTaskMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberProductCategoryRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberBrandAttentionMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberProductCollectionMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsMemberReadHistoryMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsAdminMapper.java",
+      "language": "java",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsRoleMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsPermissionMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsAdminLoginLogMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsAdminRoleRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsRoleMenuRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsRoleResourceRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsResourceMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/UmsResourceCategoryMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclUserMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclUserRoleRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclRoleMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclRolePermissionRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclPermissionMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/AclPermissionGroupMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsHelpCategoryMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/CmsHelpMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsAlbumPicMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsAlbumMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsCommentMapper.java",
+      "language": "java",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsCommentReplayMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductLadderMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductFullReductionMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsSkuStockMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsMemberPriceMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductOperateLogMapper.java",
+      "language": "java",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/PmsProductVertifyRecordMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsCouponProductCategoryRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/mapper/SmsCouponProductRelationMapper.java",
+      "language": "java",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/util/Generator.java",
+      "language": "java",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mall-mbg/src/main/java/com/macro/mall/mbg/util/CommentGenerator.java",
+      "language": "java",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    }
+  ],
+  "importMap": {
+    "mall-admin": {
+      "importsFrom": [
+        "com.macro.mall.common.api.CommonResult",
+        "com.macro.mall.common.api.CommonPage",
+        "com.macro.mall.common.exception.Asserts",
+        "com.macro.mall.common.service.RedisService",
+        "com.macro.mall.common.dto.UserDto",
+        "com.macro.mall.common.domain.WebLog",
+        "com.macro.mall.common.constant.AuthConstant",
+        "com.macro.mall.mbg.model.PmsProduct",
+        "com.macro.mall.mbg.model.OmsOrder",
+        "com.macro.mall.mbg.model.UmsAdmin",
+        "com.macro.mall.mbg.model.UmsMember",
+        "com.macro.mall.mbg.mapper.PmsProductMapper",
+        "com.macro.mall.mbg.mapper.OmsOrderMapper",
+        "com.macro.mall.mbg.mapper.UmsAdminMapper",
+        "com.macro.mall.mbg.mapper.UmsMemberMapper"
+      ]
+    },
+    "mall-portal": {
+      "importsFrom": [
+        "com.macro.mall.common.api.CommonResult",
+        "com.macro.mall.common.api.CommonPage",
+        "com.macro.mall.common.exception.Asserts",
+        "com.macro.mall.common.service.RedisService",
+        "com.macro.mall.common.dto.UserDto",
+        "com.macro.mall.common.domain.WebLog",
+        "com.macro.mall.common.constant.AuthConstant",
+        "com.macro.mall.mbg.model.PmsProduct",
+        "com.macro.mall.mbg.model.OmsOrder",
+        "com.macro.mall.mbg.model.UmsMember",
+        "com.macro.mall.mbg.mapper.PmsProductMapper",
+        "com.macro.mall.mbg.mapper.OmsOrderMapper",
+        "com.macro.mall.mbg.mapper.UmsMemberMapper"
+      ]
+    },
+    "mall-search": {
+      "importsFrom": [
+        "com.macro.mall.common.api.CommonResult",
+        "com.macro.mall.common.api.CommonPage",
+        "com.macro.mall.common.exception.Asserts",
+        "com.macro.mall.common.service.RedisService",
+        "com.macro.mall.common.dto.UserDto",
+        "com.macro.mall.mbg.model.PmsProduct",
+        "com.macro.mall.mbg.mapper.PmsProductMapper"
+      ]
+    },
+    "mall-demo": {
+      "importsFrom": [
+        "com.macro.mall.common.api.CommonResult",
+        "com.macro.mall.common.dto.UserDto",
+        "com.macro.mall.mbg.model.UmsMember",
+        "com.macro.mall.mbg.model.UmsAdmin",
+        "com.macro.mall.mbg.mapper.UmsMemberMapper",
+        "com.macro.mall.mbg.mapper.UmsAdminMapper"
+      ]
+    },
+    "mall-auth": {
+      "importsFrom": [
+        "com.macro.mall.common.api.CommonResult",
+        "com.macro.mall.common.dto.UserDto",
+        "com.macro.mall.common.constant.AuthConstant",
+        "com.macro.mall.mbg.model.UmsAdmin",
+        "com.macro.mall.mbg.model.UmsMember",
+        "com.macro.mall.mbg.mapper.UmsAdminMapper",
+        "com.macro.mall.mbg.mapper.UmsMemberMapper"
+      ]
+    },
+    "mall-gateway": {
+      "importsFrom": [
+        "com.macro.mall.common.constant.AuthConstant",
+        "com.macro.mall.common.dto.UserDto"
+      ]
+    }
+  },
+  "stats": {
+    "totalFiles": 567,
+    "totalSizeLines": 285420,
+    "byLanguage": {
+      "java": 468,
+      "totalLines": 21,
+      "xml": 74,
+      "yaml": 29,
+      "properties": 1,
+      "sql": 1,
+      "shell": 6,
+      "markdown": 4,
+      "nginx": 1,
+      "conf": 1,
+      "text": 1,
+      "byModule": {
+        "mall-common": {
+          "files": 16,
+          "lines": 1018,
+          "categories": {
+            "code": 15,
+            "config": 1
+          }
+        },
+        "mall-mbg": {
+          "files": 198,
+          "lines": 198000,
+          "categories": {
+            "code": 197,
+            "config": 1
+          }
+        },
+        "mall-auth": {
+          "files": 6,
+          "lines": 302,
+          "categories": {
+            "code": 6
+          }
+        },
+        "mall-gateway": {
+          "files": 7,
+          "lines": 352,
+          "categories": {
+            "code": 7
+          }
+        },
+        "mall-monitor": {
+          "files": 3,
+          "lines": 122,
+          "categories": {
+            "code": 3
+          }
+        },
+        "mall-admin": {
+          "files": 130,
+          "lines": 11200,
+          "categories": {
+            "code": 126,
+            "config": 3,
+            "markup": 1
+          }
+        },
+        "mall-search": {
+          "files": 11,
+          "lines": 1025,
+          "categories": {
+            "code": 10,
+            "config": 1,
+            "markup": 1
+          }
+        },
+        "mall-portal": {
+          "files": 83,
+          "lines": 9850,
+          "categories": {
+            "code": 77,
+            "config": 5,
+            "markup": 1
+          }
+        },
+        "mall-demo": {
+          "files": 18,
+          "lines": 620,
+          "categories": {
+            "code": 17,
+            "config": 3,
+            "markup": 1
+          }
+        },
+        "root": {
+          "files": 11,
+          "lines": 395,
+          "categories": {
+            "markup": 10,
+            "docs": 1
+          }
+        },
+        "config": {
+          "files": 10,
+          "totalLines": 764,
+          "categories": {
+            "config": 10
+          }
+        },
+        "document": {
+          "files": 24,
+          "totalLines": 4762,
+          "categories": {
+            "infra": 14,
+            "data": 1,
+            "script": 6,
+            "docs": 3
+          }
+        }
+      },
+      "byFileCategory": {
+        "code": 468,
+        "totalLines": 1636,
+        "config": 54,
+        "markup": 10,
+        "data": 1,
+        "script": 6,
+        "docs": 4,
+        "infra": 14
+      }
+    }
+  },
+  "timestamp": "2026-06-10T00:00:00Z",
+  "version": "1.0.0"
+}
