@@ -22,7 +22,7 @@ jobs:
   build-and-push:
     name: 构建并推送镜像
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       # -------------------------------------------------------
@@ -45,10 +45,20 @@ jobs:
       # Step 3: Maven 编译打包（跳过测试以加速）
       # -------------------------------------------------------
       - name: Build with Maven
+        env:
+          # 增加 Maven 内存限制，防止 OOM
+          MAVEN_OPTS: "-Xmx2g -XX:+UseG1GC"
         run: |
-          mvn clean package -DskipTests -pl \
-            !mall-demo \
-            -am
+          mvn clean package \
+            -DskipTests \
+            --batch-mode \
+            --no-transfer-progress \
+            -pl !mall-demo \
+            -am \
+            2>&1 | tee maven-build.log
+
+          echo "===== Maven 构建摘要 ====="
+          tail -30 maven-build.log
 
       # -------------------------------------------------------
       # Step 4: 设置 Docker Buildx（多平台构建 + 缓存）
