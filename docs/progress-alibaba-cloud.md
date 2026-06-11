@@ -83,7 +83,8 @@
 **当前 hosts 内容**:
 ```bash
 # mall-swarm 集群服务器映射
-106.53.106.41  tencent-cloud-main   # 腾讯云主服务器
+106.53.106.41  tencent-cloud-main   # 腾讯云 网关服务器（原主服务器）
+106.53.132.192  tencent-cloud-data  # 腾讯云 数据服务器（新增）
 ```
 
 **网络连通性**: ✅ ping 延迟 ~12ms，0% 丢包
