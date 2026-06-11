@@ -44,6 +44,7 @@ jobs:
         run: |
           mvn clean package \
             -DskipTests \
+            -Ddocker.skip=true \
             --batch-mode \
             --no-transfer-progress \
             -pl !mall-demo \
