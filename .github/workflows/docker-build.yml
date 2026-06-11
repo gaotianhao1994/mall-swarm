@@ -1,8 +1,12 @@
 # ============================================================
 #  mall-swarm CI/CD 工作流 — 自动构建 Docker 镜像并推送到 ACR
 #
-#  流程：
-#    checkout → Maven 构建(根目录) → Docker 构建(context=根目录) → 推送 ACR
+#  镜像仓库策略：单仓库 + Tag 区分
+#    所有服务镜像推送到同一个 ACR 仓库(mall-swarm-202606)
+#    用 tag 区分服务，如 :mall-gateway, :mall-admin:latest 等
+#
+#  完整镜像路径示例：
+#    crpi-xxx.cn-guangzhou.personal.cr.aliyuncs.com/mall-swarm-202606/mall-swarm-202606:mall-gateway
 # ============================================================
 
 name: Build and Push Docker Images
@@ -17,6 +21,8 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   REGISTRY: ${{ secrets.ACR_REGISTRY }}
   NAMESPACE: ${{ secrets.ACR_NAMESPACE }}
+  # ACR 仓库名（所有服务共用这一个仓库）
+  REPO: mall-swarm-202606
 
 jobs:
   build-and-push:
@@ -37,7 +43,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # ---- Step 3: Maven 编译打包（在项目根目录执行）----
+      # ---- Step 3: Maven 编译打包 ----
       - name: Build with Maven
         env:
           MAVEN_OPTS: "-Xmx2g -XX:+UseG1GC"
@@ -47,7 +53,7 @@ jobs:
             -Ddocker.skip=true \
             --batch-mode \
             --no-transfer-progress \
-            -pl !mall-demo \
+            -pl "!mall-demo" \
             -am \
             2>&1 | tee maven-build.log
 
@@ -62,7 +68,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # GitHub Actions 运行器访问 Docker Hub 不稳定，配置国内镜像加速
       - name: Configure Docker mirror
         run: |
           sudo mkdir -p /etc/docker
@@ -78,17 +83,13 @@ jobs:
       - name: Verify ACR configuration
         run: |
           echo "===== ACR 配置验证 ====="
-          echo "Registry: ${{ env.REGISTRY }}"
-          echo "Namespace: ${{ env.NAMESPACE }}"
-          echo "Image tag: ${{ env.IMAGE_TAG }}"
+          echo "Registry:   ${{ env.REGISTRY }}"
+          echo "Namespace:  ${{ env.NAMESPACE }}"
+          echo "Repository: ${{ env.REPO }}"
+          echo "Image tag:  ${{ env.IMAGE_TAG }}"
           echo ""
-          echo "预期镜像路径示例:"
-          echo "  ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-gateway:${{ env.IMAGE_TAG }}"
-          echo ""
-          if [ -z "${{ env.REGISTRY }}" ] || [ "${{ env.REGISTRY }}" = "mall-swarm-202606.cn-hangzhou.cr.aliyuncs.com" ]; then
-            echo "::error::ACR_REGISTRY 值不正确！请检查 GitHub Secrets 中 ACR_REGISTRY 是否为广州个人版地址"
-            exit 1
-          fi
+          echo "镜像路径格式: \${REGISTRY}/\${NAMESPACE}/\${REPO}:\${SERVICE}:\${TAG}"
+          echo "示例: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-gateway"
 
       - name: Login to ACR
         uses: docker/login-action@v3
@@ -97,91 +98,94 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      # ---- Step 6~11: 构建各微服务镜像 ----
-      #    关键：context = "." （项目根目录），这样 COPY 能找到各模块的 target/JAR
+      # ---- Step 6~11: 构建各微服务镜像并推送 ----
+      #    单仓库模式：所有镜像推送到 ${REGISTRY}/${NAMESPACE}/${REPO}
+      #    用 tag 区分服务名和版本
 
-      - name: Build mall-gateway image
+      - name: Build & Push mall-gateway
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-gateway:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-gateway:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-gateway-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-gateway-latest
           build-args: |
             JAR_PATH=mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
 
-      - name: Build mall-admin image
+      - name: Build & Push mall-admin
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-admin:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-admin:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-admin-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-admin-latest
           build-args: |
             JAR_PATH=mall-admin/target/mall-admin-1.0-SNAPSHOT.jar
 
-      - name: Build mall-auth image
+      - name: Build & Push mall-auth
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-auth:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-auth:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-auth-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-auth-latest
           build-args: |
             JAR_PATH=mall-auth/target/mall-auth-1.0-SNAPSHOT.jar
 
-      - name: Build mall-portal image
+      - name: Build & Push mall-portal
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-portal:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-portal:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-portal-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-portal-latest
           build-args: |
             JAR_PATH=mall-portal/target/mall-portal-1.0-SNAPSHOT.jar
 
-      - name: Build mall-search image
+      - name: Build & Push mall-search
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-search:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-search:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-search-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-search-latest
           build-args: |
             JAR_PATH=mall-search/target/mall-search-1.0-SNAPSHOT.jar
 
-      - name: Build mall-monitor image
+      - name: Build & Push mall-monitor
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.module
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-monitor:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-monitor:latest
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-monitor-${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}:mall-monitor-latest
           build-args: |
             JAR_PATH=mall-monitor/target/mall-monitor-1.0-SNAPSHOT.jar
 
       # ---- 汇总 ----
       - name: Summary
         run: |
+          R="${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.REPO }}"
+          T="${{ env.IMAGE_TAG }}"
           echo "## 构建完成 ✅" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| 服务 | 镜像 |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-gateway | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-gateway:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-admin | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-admin:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-auth | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-auth:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-portal | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-portal:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-search | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-search:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| mall-monitor | \`${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-monitor:${{ env.IMAGE_TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 服务 | 镜像标签 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-gateway | \`${R}:mall-gateway-${T}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-admin | \`${R}:mall-admin-${T}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-auth | \`${R}:mall-auth-${T}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-portal | \`${R}:mall-portal-${T}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-search | \`${R}:mall-search-${T}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| mall-monitor | \`${R}:mall-monitor-${T}\` |" >> $GITHUB_STEP_SUMMARY
