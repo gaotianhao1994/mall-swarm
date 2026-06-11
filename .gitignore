@@ -9,3 +9,7 @@ target/
 .settings/
 .classpath
 .project
+
+# Environment variables (contains secrets!) #
+.env
+docker/.env

@@ -1,0 +1,55 @@
+# ============================================================
+#  mall-swarm 微服务模块通用 Dockerfile
+#  用法：在 GitHub Actions 中通过 --build-arg JAR_FILE=xxx.jar 使用
+#  多阶段构建：Maven JAR → 最小化运行时镜像
+# ============================================================
+
+# ---- 第一阶段：构建环境 ----
+FROM maven:3.9-eclipse-temurin-17 AS builder
+
+WORKDIR /app
+
+# 先复制 pom 文件（利用 Docker 缓存层，依赖不变时不用重新下载）
+COPY pom.xml .
+COPY mall-common/pom.xml ./mall-common/
+COPY mall-mbg/pom.xml ./mall-mbg/
+RUN mvn dependency-go-offline -pl !mall-demo || true
+
+# 复制源码并构建
+COPY . .
+
+# 通过构建参数指定要打包的模块
+ARG JAR_FILE=target/app.jar
+RUN mvn clean package -DskipTests -pl !mall-demo -am && \
+    cp $(find target -name "*.jar" -not -name "*sources.jar" -not -name "*javadoc.jar" | head -1) /app/application.jar || \
+    echo "Using pre-built JAR: ${JAR_FILE}"
+
+# ---- 第二阶段：运行时镜像（最小化）----
+FROM eclipse-temurin:17-jre-alpine
+
+LABEL maintainer="mall-swarm"
+LABEL description="mall-swarm microservice module"
+
+# 安装基础工具
+RUN apk add --no-cache curl tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata
+
+WORKDIR /app
+
+# 从构建阶段复制 JAR 包
+ARG JAR_FILE=target/app.jar
+COPY --from=builder /app/application.jar ./app.jar || true
+COPY --from=builder ${JAR_FILE} ./app.jar || true
+
+# JVM 参数优化（适合低配服务器）
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Djava.security.egd=file:/dev/./urandom"
+
+EXPOSE 8080
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar"]
