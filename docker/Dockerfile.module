@@ -1,38 +1,36 @@
 # ============================================================
 #  mall-swarm 微服务模块通用 Dockerfile
 #
-#  设计思路：
-#    Maven 构建已在 GitHub Actions Step 3 中完成
-#    本 Dockerfile 只负责：把 JAR 包 → 塞进轻量运行时镜像
+#  架构设计：
+#    context = 项目根目录（"."）
+#    Maven 在 Step 3 已构建好所有 JAR，散落在各模块 target/ 下
+#    本文件通过 ARG 接收 JAR 的相对路径，直接复制到运行镜像
 #
-#  用法：
-#    context: ./mall-xxx          （各模块自己的目录）
-#    build-arg: JAR_FILE=target/mall-xxx-1.0-SNAPSHOT.jar
+#  调用方式（来自 docker-build.yml）：
+#    context: .
+#    file: ./docker/Dockerfile.module
+#    build-arg: JAR_PATH=mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
 # ============================================================
 
-# ---- 运行时镜像（JRE Alpine，体积小）----
 FROM eclipse-temurin:17-jre-alpine
 
 LABEL maintainer="mall-swarm"
 LABEL description="mall-swarm microservice module"
 
-# 安装基础工具 + 设置时区
 RUN apk add --no-cache curl && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 
 WORKDIR /app
 
-# 复制已构建好的 JAR 包（由 GitHub Actions Maven 步骤生成）
-ARG JAR_FILE=target/app.jar
-COPY ${JAR_FILE} ./app.jar
+# JAR_PATH 是相对于项目根目录的路径，如 mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
+ARG JAR_PATH
+COPY ${JAR_PATH} ./app.jar
 
-# JVM 参数优化（适合低配服务器 4G 内存）
 ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Djava.security.egd=file:/dev/./urandom"
 
 EXPOSE 8080
 
-# 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
