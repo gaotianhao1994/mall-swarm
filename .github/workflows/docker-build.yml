@@ -75,6 +75,21 @@ jobs:
           sudo systemctl restart docker
 
       # ---- Step 5: 登录 ACR ----
+      - name: Verify ACR configuration
+        run: |
+          echo "===== ACR 配置验证 ====="
+          echo "Registry: ${{ env.REGISTRY }}"
+          echo "Namespace: ${{ env.NAMESPACE }}"
+          echo "Image tag: ${{ env.IMAGE_TAG }}"
+          echo ""
+          echo "预期镜像路径示例:"
+          echo "  ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/mall-gateway:${{ env.IMAGE_TAG }}"
+          echo ""
+          if [ -z "${{ env.REGISTRY }}" ] || [ "${{ env.REGISTRY }}" = "mall-swarm-202606.cn-hangzhou.cr.aliyuncs.com" ]; then
+            echo "::error::ACR_REGISTRY 值不正确！请检查 GitHub Secrets 中 ACR_REGISTRY 是否为广州个人版地址"
+            exit 1
+          fi
+
       - name: Login to ACR
         uses: docker/login-action@v3
         with:
