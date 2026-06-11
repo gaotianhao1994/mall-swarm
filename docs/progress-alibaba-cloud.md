@@ -10,7 +10,7 @@
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| 阶段0 | 环境准备 | ⏳ **进行中** |
+| 阶段0 | 环境准备 | ✅ **已完成** |
 | 阶段1 | — （本服务器不部署基础骨架） | — |
 | 阶段2 | 商品搜索（Elasticsearch + mall-search） | ☐ 待开始 |
 | 阶段3 | 前台商城（MongoDB + RabbitMQ + mall-portal） | ☐ 待开始 |
@@ -28,36 +28,36 @@
 
 ### 2.2 安装 Docker
 
-- [ ] 更新包索引 (`apt-get update`)
-- [ ] 安装依赖包（ca-certificates, curl, gnupg, lsb-release）
-- [ ] 添加 Docker 官方 GPG 密钥
-- [ ] 添加 Docker 仓库源
-- [ ] 安装 Docker Engine（docker-ce, docker-ce-cli, containerd.io, buildx-plugin, compose-plugin）
-- [ ] 将当前用户加入 docker 组
-- [ ] 验证：`docker --version`
+- [x] 更新包索引 (`apt-get update`)
+- [x] 安装依赖包（ca-certificates, curl, gnupg, lsb-release）
+- [x] 添加 Docker 官方 GPG 密钥（使用阿里云镜像源）
+- [x] 添加 Docker 仓库源
+- [x] 安装 Docker Engine（docker-ce, docker-ce-cli, containerd.io, buildx-plugin, compose-plugin）
+- [ ] 将当前用户加入 docker 组（当前为 root 用户，暂不需要）
+- [x] 验证：`docker --version`
 
-**安装结果记录**: _________________
+**安装结果记录**: Docker 29.5.3 (2026-06-11)
 
 ### 2.3 安装 Docker Compose
 
-- [ ] 验证 Docker Compose 插件已随 Docker 一起安装
-- [ ] 验证：`docker compose version`
+- [x] 验证 Docker Compose 插件已随 Docker 一起安装
+- [x] 验证：`docker compose version`
 
-**版本记录**: _________________
+**版本记录**: Docker Compose v5.1.4 (2026-06-11)
 
 ### 2.4 安装 Git
 
-- [ ] 执行 `apt-get install -y git`
-- [ ] 验证：`git --version`
+- [x] Git 已预装（系统自带）
+- [x] 验证：`git --version`
 
-**版本记录**: _________________
+**版本记录**: Git 2.34.1 (2026-06-11)
 
 ### 2.5 验证安装
 
-- [ ] `docker --version` ✅ / ❌
-- [ ] `docker compose version` ✅ / ❌
-- [ ] `git --version` ✅ / ❌
-- [ ] `docker run hello-world` 测试 ✅ / ❌
+- [x] `docker --version` ✅ (29.5.3)
+- [x] `docker compose version` ✅ (v5.1.4)
+- [x] `git --version` ✅ (2.34.1)
+- [ ] `docker run hello-world` 测试 ⚠️ (Docker Hub 超时，使用 ACR 代替)
 
 ### 2.6 防火墙/安全组端口开放
 
@@ -65,25 +65,28 @@
 
 | 端口 | 用途 | 已开放 |
 |------|------|--------|
-| 22 | SSH | ☐ |
-| 9200 | Elasticsearch HTTP | ☐ |
-| 9300 | Elasticsearch TCP（节点间通信，建议仅内网） | ☐ |
-| 27017 | MongoDB（建议仅内网） | ☐ |
-| 5672 | RabbitMQ（建议仅内网） | ☐ |
-| 15672 | RabbitMQ 管理界面 | ☐ |
-| 8081 | mall-search | ☐ |
-| 8085 | mall-portal | ☐ |
-| 5044 | Logstash 输入 | ☐ |
-| 5601 | Kibana | ☐ |
+| 22 | SSH | ✅ |
+| 9200 | Elasticsearch HTTP | ✅ |
+| 9300 | Elasticsearch TCP（节点间通信，建议仅内网） | ✅ |
+| 27017 | MongoDB（建议仅内网） | ✅ |
+| 5672 | RabbitMQ（建议仅内网） | ✅ |
+| 15672 | RabbitMQ 管理界面 | ✅ |
+| 8081 | mall-search | ✅ |
+| 8085 | mall-portal | ✅ |
+| 5044 | Logstash 输入 | ✅ |
+| 5601 | Kibana | ✅ |
 
 ### 2.7 Hosts 配置
 
-- [ ] 配置 `/etc/hosts`，添加腾讯云内网映射
+- [x] 配置 `/etc/hosts`，添加腾讯云内网映射
 
 **当前 hosts 内容**:
 ```bash
-# 待配置
+# mall-swarm 集群服务器映射
+106.53.106.41  tencent-cloud-main   # 腾讯云主服务器
 ```
+
+**网络连通性**: ✅ ping 延迟 ~12ms，0% 丢包
 
 ---
 
@@ -135,7 +138,7 @@
 
 | 时间 | 阶段 | 问题描述 | 解决方案 | 状态 |
 |------|------|---------|---------|------|
-| — | — | — | — | — |
+| 2026-06-11 | 阶段0 | Docker Hub 连接超时 (i/o timeout) | 配置镜像加速器 + 使用阿里云 ACR | ✅ 已解决 |
 
 <!-- 新的问题追加在上方 -->
 
