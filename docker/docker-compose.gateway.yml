@@ -17,7 +17,7 @@ services:
     environment:
       MODE: standalone
       PREFER_HOST_MODE: hostname
-      NACOS_AUTH_ENABLE: "true"
+      NACOS_AUTH_ENABLE: "false"
       NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:-SecretKey012345678901234567890123456789012345678901234567890123456789}
       NACOS_AUTH_IDENTITY_KEY: serverIdentity
       NACOS_AUTH_IDENTITY_VALUE: security
@@ -78,8 +78,10 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
-      SPRING_CLOUD_NACOS_USERNAME: nacos
-      SPRING_CLOUD_NACOS_PASSWORD: nacos
+      # 中间件地址（环境变量直传，绕过NacosConfig客户端bug）
+      SPRING_DATA_REDIS_HOST: ${REDIS_ADDR:-106.53.132.192}
+      SPRING_DATA_REDIS_PORT: "6379"
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-Mall@2026_redis}
     ports:
       - "${GATEWAY_PORT:-8201}:8201"
     volumes:
@@ -104,8 +106,11 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
-      SPRING_CLOUD_NACOS_USERNAME: nacos
-      SPRING_CLOUD_NACOS_PASSWORD: nacos
+      # 中间件地址（环境变量直传，绕过NacosConfig客户端bug）
+      SPRING_DATASOURCE_URL: jdbc:mysql://${MYSQL_ADDR:-106.53.132.192}:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      SPRING_ELASTICSEARCH_URIS: http://${ES_ADDR:-106.53.106.41}:9200
     ports:
       - "${SEARCH_PORT:-8081}:8081"
     volumes:
