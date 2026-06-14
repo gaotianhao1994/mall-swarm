@@ -28,9 +28,9 @@ services:
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     volumes:
-      - ${DATA_DIR:-/opt/mall-swarm/data}/mysql/data:/var/lib/mysql
-      - ${DATA_DIR:-/opt/mall-swarm/data}/mysql/conf:/etc/mysql/conf.d
-      - ${DATA_DIR:-/opt/mall-swarm/data}/mysql/log:/var/log/mysql
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/data:/var/lib/mysql
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/conf:/etc/mysql/conf.d
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/log:/var/log/mysql
       - ./sql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-mall_root}"]
@@ -54,7 +54,7 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - ${DATA_DIR:-/opt/mall-swarm/data}/redis:/data
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-mall_redis}", "ping"]
       interval: 10s
@@ -81,7 +81,7 @@ services:
     ports:
       - "${NACOS_PORT:-8848}:8848"
     volumes:
-      - ${DATA_DIR:-/opt/mall-swarm/data}/nacos:/home/nacos/logs
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/nacos:/home/nacos/logs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/liveness"]
       interval: 15s
@@ -107,7 +107,7 @@ services:
     ports:
       - "${GATEWAY_PORT:-8201}:8201"
     volumes:
-      - ${LOG_DIR:-/opt/mall-swarm/logs}/gateway:/var/logs
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/gateway:/var/logs
     depends_on:
       nacos:
         condition: service_healthy
@@ -136,7 +136,7 @@ services:
     ports:
       - "${ADMIN_PORT:-8080}:8080"
     volumes:
-      - ${LOG_DIR:-/opt/mall-swarm/logs}/admin:/var/logs
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/admin:/var/logs
     depends_on:
       nacos:
         condition: service_healthy
@@ -159,7 +159,7 @@ services:
     ports:
       - "${AUTH_PORT:-8401}:8401"
     volumes:
-      - ${LOG_DIR:-/opt/mall-swarm/logs}/auth:/var/logs
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/auth:/var/logs
     depends_on:
       nacos:
         condition: service_healthy

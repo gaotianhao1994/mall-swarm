@@ -155,12 +155,12 @@ ssh root@8.134.65.121
 ### 重要路径
 | 用途 | 路径 |
 |------|------|
-| 项目根目录 | `/opt/mall-swarm` |
-| Docker Compose 文件 | `/opt/mall-swarm/docker/` |
-| 数据卷（数据持久化） | `/opt/mall-swarm/data/` |
-| ES 数据目录 | `/opt/mall-swarm/data/elasticsearch` |
-| MongoDB 数据目录 | `/opt/mall-swarm/data/mongodb` |
-| 日志目录 | `/opt/mall-swarm/logs/` |
+| 项目根目录 | `/root/projects/mall-swarm` |
+| Docker Compose 文件 | `/root/projects/mall-swarm/docker/` |
+| 数据卷（数据持久化） | `/root/projects/mall-swarm/data/` |
+| ES 数据目录 | `/root/projects/mall-swarm/data/elasticsearch` |
+| MongoDB 数据目录 | `/root/projects/mall-swarm/data/mongodb` |
+| 日志目录 | `/root/projects/mall-swarm/logs/` |
 
 ### 内存预警线（2核4G 机器）
 

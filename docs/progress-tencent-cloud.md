@@ -85,7 +85,7 @@
 | 类型 | 私有 |
 
 - [x] GitHub Secrets 已配置（ACR_REGISTRY / ACR_NAMESPACE / ACR_USERNAME / ACR_PASSWORD）
-- [x] 项目已克隆到 `/opt/mall-swarm`
+- [x] 项目已克隆到 `/root/projects/mall-swarm`
 
 #### 3.2 CI/CD 工作流（GitHub Actions）✅ 构建成功
 - [x] 创建 `.github/workflows/docker-build.yml`
@@ -156,7 +156,7 @@ last try server is {serverIp = 'localhost', server main port = 8848}
 ## 已创建的文件清单
 
 ```
-/opt/mall-swarm/
+/root/projects/mall-swarm/
 ├── .github/workflows/
 │   └── docker-build.yml              ← CI/CD 工作流（Maven构建 + Docker推送ACR）
 ├── docker/
@@ -197,11 +197,11 @@ ssh tengxun-server        # 或 ssh root@106.53.106.41
 ### 重要路径
 | 用途 | 路径 |
 |------|------|
-| 项目根目录 | `/opt/mall-swarm` |
-| Docker Compose 文件 | `/opt/mall-swarm/docker/` |
-| 数据卷（数据持久化） | `/opt/mall-swarm/data/` |
-| 日志目录 | `/opt/mall-swarm/logs/` |
-| SQL 初始化文件 | `/opt/mall-swarm/document/sql/mall.sql` |
+| 项目根目录 | `/root/projects/mall-swarm` |
+| Docker Compose 文件 | `/root/projects/mall-swarm/docker/` |
+| 数据卷（数据持久化） | `/root/projects/mall-swarm/data/` |
+| 日志目录 | `/root/projects/mall-swarm/logs/` |
+| SQL 初始化文件 | `/root/projects/mall-swarm/document/sql/mall.sql` |
 
 ### .env 文件关键变量
 | 变量 | 值 |
@@ -215,10 +215,10 @@ ssh tengxun-server        # 或 ssh root@106.53.106.41
 ### 常用命令速查
 ```bash
 # 启动所有阶段1服务
-cd /opt/mall-swarm/docker && docker compose -f docker-compose.base.yml up -d
+cd /root/projects/mall-swarm/docker && docker compose -f docker-compose.base.yml up -d
 
 # 仅启动基础设施
-cd /opt/mall-swarm/docker && docker compose -f docker-compose.base.yml up -d mysql redis nacos
+cd /root/projects/mall-swarm/docker && docker compose -f docker-compose.base.yml up -d mysql redis nacos
 
 # 查看日志
 docker compose -f docker-compose.base.yml logs -f mall-gateway
