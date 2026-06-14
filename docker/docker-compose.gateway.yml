@@ -1,0 +1,139 @@
+# ============================================================
+#  mall-swarm 网关服务器编排 — tengxun-server (106.53.106.41)
+#  组件: Nacos + Elasticsearch + Gateway + Search + Nginx
+#
+#  使用方式:
+#    docker compose -f docker-compose.gateway.yml up -d
+# ============================================================
+
+services:
+
+  # ==================== 基础设施 ====================
+
+  nacos:
+    image: nacos/nacos-server:v2.1.0
+    container_name: mall-nacos
+    restart: always
+    environment:
+      MODE: standalone
+      PREFER_HOST_MODE: hostname
+      NACOS_AUTH_ENABLE: "true"
+      NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:-SecretKey012345678901234567890123456789012345678901234567890123456789}
+      NACOS_AUTH_IDENTITY_KEY: serverIdentity
+      NACOS_AUTH_IDENTITY_VALUE: security
+      JVM_XMS: 256m
+      JVM_XMX: 512m
+      JVM_XMN: 128m
+      TZ: Asia/Shanghai
+    ports:
+      - "${NACOS_PORT:-8848}:8848"
+      - "9848:9848"
+      - "9849:9849"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/nacos:/home/nacos/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/liveness"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  elasticsearch:
+    image: elasticsearch:7.17.3
+    container_name: mall-elasticsearch
+    restart: always
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      cluster.name: mall-es
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      TZ: Asia/Shanghai
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "${ES_PORT:-9200}:9200"
+      - "${ES_TCP_PORT:-9300}:9300"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/es/data:/usr/share/elasticsearch/data
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/es/plugins:/usr/share/elasticsearch/plugins
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ==================== 应用服务 ====================
+
+  mall-gateway:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-gateway-latest
+    container_name: mall-gateway
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
+    ports:
+      - "${GATEWAY_PORT:-8201}:8201"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/gateway:/var/logs
+    depends_on:
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8201/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  mall-search:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-search-latest
+    container_name: mall-search
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
+    ports:
+      - "${SEARCH_PORT:-8081}:8081"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/search:/var/logs
+    depends_on:
+      nacos:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ==================== 前端代理 ====================
+
+  nginx:
+    image: nginx:1.22
+    container_name: mall-nginx
+    restart: always
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      mall-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

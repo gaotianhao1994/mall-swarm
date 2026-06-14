@@ -1,0 +1,15 @@
+spring:
+  data:
+    redis:
+      host: 106.53.132.192
+      database: 0
+      port: 6379
+      password: Mall@2026_redis
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall: info
+logstash:
+  host: 8.134.65.121

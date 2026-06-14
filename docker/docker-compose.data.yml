@@ -1,0 +1,112 @@
+# ============================================================
+#  mall-swarm 数据服务器编排 — tengxun-server9 (106.53.132.192)
+#  组件: MySQL + Redis + Admin + Auth
+#
+#  使用方式:
+#    docker compose -f docker-compose.data.yml up -d
+# ============================================================
+
+services:
+
+  # ==================== 基础设施 ====================
+
+  mysql:
+    image: mysql:5.7
+    container_name: mall-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      MYSQL_DATABASE: mall
+      TZ: Asia/Shanghai
+    command: >
+      mysqld
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=200
+      --innodb_buffer_pool_size=256M
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/data:/var/lib/mysql
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/conf:/etc/mysql/conf.d
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/log:/var/log/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-Mall@2026_root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7
+    container_name: mall-redis
+    restart: always
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:-Mall@2026_redis}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-Mall@2026_redis}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ==================== 应用服务 ====================
+
+  mall-admin:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-admin-latest
+    container_name: mall-admin
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+    ports:
+      - "${ADMIN_PORT:-8080}:8080"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/admin:/var/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  mall-auth:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-auth-latest
+    container_name: mall-auth
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms192m -Xmx320m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+    ports:
+      - "${AUTH_PORT:-8401}:8401"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/auth:/var/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8401/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s

@@ -1,0 +1,97 @@
+# ============================================================
+#  mall-swarm 扩展服务器编排 — aliyun-server (8.134.65.121)
+#  组件: RabbitMQ + MongoDB + Portal + Monitor
+#
+#  使用方式:
+#    docker compose -f docker-compose.extend.yml up -d
+# ============================================================
+
+services:
+
+  # ==================== 基础设施 ====================
+
+  rabbitmq:
+    image: rabbitmq:3.9.11-management
+    container_name: mall-rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-mall}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-mall}
+      RABBITMQ_DEFAULT_VHOST: /mall
+      TZ: Asia/Shanghai
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  mongo:
+    image: mongo:4
+    container_name: mall-mongo
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - ${DATA_DIR:-/root/projects/mall-swarm/data}/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==================== 应用服务 ====================
+
+  mall-portal:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-portal-latest
+    container_name: mall-portal
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+    ports:
+      - "${PORTAL_PORT:-8085}:8085"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/portal:/var/logs
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  mall-monitor:
+    image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-monitor-latest
+    container_name: mall-monitor
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms192m -Xmx256m -XX:+UseG1GC"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+    ports:
+      - "${MONITOR_PORT:-8101}:8101"
+    volumes:
+      - ${LOG_DIR:-/root/projects/mall-swarm/logs}/monitor:/var/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8101/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s

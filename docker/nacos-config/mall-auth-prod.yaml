@@ -1,0 +1,10 @@
+# mall-auth 最小生产配置
+# Auth 无特殊中间件依赖，仅注册到 Nacos
+# 如需 Redis 缓存配置可在此添加
+spring:
+  data:
+    redis:
+      host: 106.53.132.192
+      database: 0
+      port: 6379
+      password: Mall@2026_redis
