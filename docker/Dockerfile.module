@@ -1,37 +1,66 @@
 # ============================================================
 #  mall-swarm 微服务模块通用 Dockerfile
 #
-#  架构设计：
-#    context = 项目根目录（"."）
-#    Maven 在 Step 3 已构建好所有 JAR，散落在各模块 target/ 下
-#    本文件通过 ARG 接收 JAR 的相对路径，直接复制到运行镜像
+#  【这个文件是什么？】
+#  Dockerfile 是告诉 Docker 怎么打包镜像的配置文件。
+#  每个微服务都用这同一个 Dockerfile，只是传入不同的 JAR 路径。
 #
-#  调用方式（来自 docker-build.yml）：
-#    context: .
-#    file: ./docker/Dockerfile.module
-#    build-arg: JAR_PATH=mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
+#  【工作流程】
+#  1. 基础镜像：eclipse-temurin:17-jre-alpine（Java 17 运行环境，约 100MB）
+#  2. 安装 curl（用于健康检查）
+#  3. 设置时区为上海时间
+#  4. 复制 JAR 文件到镜像中
+#  5. 启动 Java 程序
+#
+#  【被谁调用？】
+#  被 .github/workflows/docker-build.yml 调用，如：
+#    docker build -f ./docker/Dockerfile.module \
+#      --build-arg JAR_PATH=mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar .
 # ============================================================
 
+# 基础镜像：Java 17 运行环境（JRE，不是 JDK，更小）
+# eclipse-temurin 是 Eclipse 基金会维护的 JDK 发行版
+# alpine 是精简版 Linux，镜像体积小
 FROM eclipse-temurin:17-jre-alpine
 
+# 镜像元数据（可选）
 LABEL maintainer="mall-swarm"
 LABEL description="mall-swarm microservice module"
 
+# 安装 curl（用于健康检查）+ 设置时区为上海
+# apk 是 Alpine Linux 的包管理器
 RUN apk add --no-cache curl && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 
+# 设置工作目录：容器内默认进入 /app 目录
 WORKDIR /app
 
-# JAR_PATH 是相对于项目根目录的路径，如 mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
+# ============================================================
+# JAR_PATH 是一个构建参数（Build Argument）
+# 它的值在 docker build 时通过 --build-arg 传入
+# 例如：--build-arg JAR_PATH=mall-gateway/target/mall-gateway-1.0-SNAPSHOT.jar
+# ============================================================
 ARG JAR_PATH
+
+# 复制 JAR 文件到容器中，重命名为 app.jar
+# 这样不管原来叫什么名字，容器内都是 app.jar
 COPY ${JAR_PATH} ./app.jar
 
+# Java 虚拟机启动参数
+# -Xms256m    初始堆内存 256MB
+# -Xmx512m    最大堆内存 512MB
+# -XX:+UseG1GC 使用 G1 垃圾回收器（适合服务器）
 ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Djava.security.egd=file:/dev/./urandom"
 
+# 暴露端口（文档作用，实际端口由 docker-compose 映射）
 EXPOSE 8080
 
+# 健康检查：每 30 秒检查一次服务是否正常
+# 如果 /actuator/health 返回非 200，Docker 认为容器不健康
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
+# 启动命令：执行 java -jar app.jar
+# JAVA_OPTS 环境变量会被替换为上面定义的 JVM 参数
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar"]

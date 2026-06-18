@@ -3,7 +3,7 @@
 #  组件: Nacos + Elasticsearch + Gateway + Search + Nginx
 #
 #  使用方式:
-#    docker compose -f docker-compose.gateway.yml up -d
+#    docker compose -f docker-compose-tengxun-server.yml up -d
 # ============================================================
 
 services:

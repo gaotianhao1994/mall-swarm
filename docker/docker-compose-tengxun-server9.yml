@@ -3,7 +3,7 @@
 #  组件: MySQL + Redis + Admin + Auth
 #
 #  使用方式:
-#    docker compose -f docker-compose.data.yml up -d
+#    docker compose -f docker-compose-tengxun-server9.yml up -d
 # ============================================================
 
 services:

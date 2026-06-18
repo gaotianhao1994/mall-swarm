@@ -3,7 +3,7 @@
 #  组件: RabbitMQ + MongoDB + Portal + Monitor
 #
 #  使用方式:
-#    docker compose -f docker-compose.extend.yml up -d
+#    docker compose -f docker-compose-aliyun-server.yml up -d
 # ============================================================
 
 services:
