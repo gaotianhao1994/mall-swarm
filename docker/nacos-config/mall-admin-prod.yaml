@@ -7,7 +7,7 @@ aliyun:
     policy:
       expire: 300
     maxSize: 10
-    callback: http://106.53.106.41:8080/aliyun/oss/callback
+    callback: http://106.53.106.41:8201/mall-admin/aliyun/oss/callback
     dir:
       prefix: mall/images/
 spring:
