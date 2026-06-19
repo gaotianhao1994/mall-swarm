@@ -1,0 +1,3 @@
+# Playwright CLI generated files
+.playwright-cli/
+verify-test.png
