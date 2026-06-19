@@ -1,37 +1,112 @@
+# ============================================================
+#  mall-portal 前台商城服务 生产环境 Nacos 配置
+#
+#  【这个文件的作用】
+#  前台商城服务的运行时配置，通过 Nacos 配置中心下发给 mall-portal 容器。
+#  应用启动时会从 Nacos 拉取此配置（dataId: mall-portal-prod.yaml）。
+#
+#  【mall-portal 依赖的中间件（最多）】
+#  - MySQL: 商品、订单、会员等业务数据
+#  - Redis: 会话管理、缓存、验证码
+#  - MongoDB: 首页内容、浏览历史等文档数据
+#  - RabbitMQ: 订单超时取消等异步消息
+#
+#  【配置项说明】
+#
+#  1. 数据源配置（MySQL）
+#     与其他服务共用同一个 MySQL 数据库。
+#
+#  2. MongoDB 配置
+#     mall-portal 使用 MongoDB 存储非关系型数据：
+#     - 首页内容（广告、专题、推荐等）
+#     - 会员浏览历史
+#     - 商品收藏
+#     数据库名: mall-port（⚠️ 注意：docker-compose 环境变量也必须一致）
+#
+#  3. Redis 配置
+#     与其他服务共用同一个 Redis。
+#
+#  4. RabbitMQ 配置
+#     用于异步消息处理：
+#     - 订单超时自动取消（cancelOrderQueue）
+#     - 库存扣减确认
+#     virtual-host: /mall（RabbitMQ 的虚拟主机隔离）
+#
+#  5. 支付宝配置（可选）
+#     mall-portal 集成了支付宝支付功能。
+#     当前是沙箱环境配置，生产环境需替换为真实凭证。
+#     returnUrl: 支付成功后跳转的前端页面地址
+#
+#  【部署位置】
+#  通过 import-config.sh 脚本导入到 Nacos。
+#  mall-portal 容器运行在 aliyun-server (8.134.65.121)。
+# ============================================================
+
 spring:
+  # MySQL 数据源配置
   datasource:
     url: jdbc:mysql://106.53.132.192:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: Mall@2026_root
+
   data:
+    # MongoDB 配置（mall-portal 专用的文档数据库）
     mongodb:
       host: 8.134.65.121
       port: 27017
+      # 数据库名：mall-port（⚠️ 必须与 docker-compose 环境变量一致）
+      # MongoDB 中 mall-port 和 mall_port 是两个不同的数据库！
       database: mall-port
+
+    # Redis 配置（与其他服务共用）
     redis:
       host: 106.53.132.192
       database: 0
       port: 6379
       password: Mall@2026_redis
+
+  # RabbitMQ 配置（异步消息处理）
   rabbitmq:
     host: 8.134.65.121
     port: 5672
+    # 虚拟主机：隔离不同项目的队列
     virtual-host: /mall
     username: mall
     password: mall
+    # 开启发布确认（确保消息不丢失）
     publisher-confirms: true
+
+# 日志配置
 logging:
   file:
     path: /var/logs
   level:
     root: info
     com.macro.mall: info
+
+# Logstash 配置（ELK 日志收集，可选）
 logstash:
   host: 8.134.65.121
+
+# ============================================================
+#  支付宝配置（可选功能）
+#
+#  mall-portal 集成了支付宝当面付/H5支付。
+#  当前配置是沙箱环境，生产环境需要：
+#  1. 在支付宝开放平台申请应用
+#  2. 替换 appId、公钥、私钥
+#  3. 修改 gatewayUrl 为正式环境地址
+# ============================================================
 alipay:
+  # 支付宝网关地址（沙箱环境）
   gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  # 支付宝应用 ID（⚠️ 需替换为真实值）
   appId: your appId
+  # 支付宝公钥（⚠️ 需替换为真实值）
   alipayPublicKey: your alipayPublicKey
+  # 应用私钥（⚠️ 需替换为真实值）
   appPrivateKey: your appPrivateKey
+  # 支付成功后跳转地址（前端 H5 页面）
   returnUrl: http://106.53.106.41/#/pages/money/paySuccess
+  # 异步通知地址（支付宝服务端回调，可选）
   notifyUrl:

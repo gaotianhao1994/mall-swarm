@@ -1,15 +1,61 @@
+# ============================================================
+#  mall-gateway 生产环境 Nacos 配置
+#
+#  【这个文件的作用】
+#  API 网关的运行时配置，通过 Nacos 配置中心下发给 mall-gateway 容器。
+#  应用启动时会从 Nacos 拉取此配置（dataId: mall-gateway-prod.yaml）。
+#
+#  【配置项说明】
+#
+#  1. Redis 配置
+#     Gateway 使用 Redis 做以下事情：
+#     - Sa-Token 会话存储（用户登录状态）
+#     - 限流计数器（可选）
+#     - 跨实例会话共享
+#     地址指向 tengxun-server9 上的 mall-redis 容器。
+#
+#  2. 日志配置
+#     日志写入容器内 /var/logs 目录，可通过 docker logs 查看。
+#     日志级别 info 适合生产环境，debug 会产生大量日志。
+#
+#  3. Logstash 配置（可选）
+#     如果部署了 ELK 日志收集系统，日志会发送到 Logstash。
+#     当前指向 aliyun-server 的 IP（如果未部署 ELK 则忽略）。
+#
+#  【部署位置】
+#  文件位于 docker/nacos-config/ 目录。
+#  通过 import-config.sh 脚本导入到 Nacos。
+#  导入命令：./import-config.sh（在 tengxun-server 上执行）
+#
+#  【与环境变量的关系】
+#  docker-compose 中的 SPRING_DATA_REDIS_HOST 等环境变量会覆盖此配置。
+#  但此文件作为 fallback，确保即使环境变量未设置也能正常工作。
+# ============================================================
+
 spring:
   data:
     redis:
+      # Redis 服务器地址（tengxun-server9 的内网 IP）
       host: 106.53.132.192
+      # Redis 数据库索引（0-15，默认 0）
       database: 0
+      # Redis 端口
       port: 6379
+      # Redis 密码（与 docker-compose .env 中的 REDIS_PASSWORD 一致）
       password: Mall@2026_redis
+
+# 日志配置
 logging:
   file:
+    # 日志文件写入容器内 /var/logs 目录
     path: /var/logs
   level:
+    # 根日志级别：info（生产环境）/ debug（调试时改为 debug）
     root: info
+    # mall 包的日志级别
     com.macro.mall: info
+
+# Logstash 配置（ELK 日志收集，可选）
 logstash:
+  # Logstash 服务器地址（aliyun-server，如果未部署 ELK 可忽略）
   host: 8.134.65.121

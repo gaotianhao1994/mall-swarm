@@ -1,19 +1,64 @@
+# ============================================================
+#  mall-search 商品搜索服务 生产环境 Nacos 配置
+#
+#  【这个文件的作用】
+#  商品搜索服务的运行时配置，通过 Nacos 配置中心下发给 mall-search 容器。
+#  应用启动时会从 Nacos 拉取此配置（dataId: mall-search-prod.yaml）。
+#
+#  【配置项说明】
+#
+#  1. 数据源配置（MySQL）
+#     mall-search 需要从 MySQL 读取商品数据，同步到 Elasticsearch。
+#     与其他服务共用同一个 MySQL 数据库。
+#
+#  2. Elasticsearch 配置
+#     mall-search 使用 Elasticsearch 做商品搜索：
+#     - 全文搜索（商品名称、描述）
+#     - 按分类、品牌筛选
+#     - 按价格排序
+#     - 搜索联想词
+#     地址指向 tengxun-server 上的 mall-elasticsearch 容器。
+#
+#  3. Elasticsearch 健康检查超时
+#     默认 1000ms，如果 ES 响应慢可以适当调大。
+#
+#  【部署位置】
+#  通过 import-config.sh 脚本导入到 Nacos。
+#  mall-search 容器运行在 tengxun-server (106.53.106.41)。
+#
+#  【注意事项】
+#  Elasticsearch 需要安装 IK 中文分词插件，否则商品搜索会报错。
+#  安装命令：docker exec mall-elasticsearch bin/elasticsearch-plugin install
+#            -b https://get.infini.cloud/elasticsearch/analysis-ik/7.17.3
+# ============================================================
+
 spring:
+  # MySQL 数据源配置（读取商品数据同步到 ES）
   datasource:
     url: jdbc:mysql://106.53.132.192:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: Mall@2026_root
+
+  # Elasticsearch 配置
   elasticsearch:
+    # ES 服务地址（tengxun-server 上的 mall-elasticsearch 容器）
     uris: http://106.53.106.41:9200
+
+# 健康检查配置
 management:
   health:
     elasticsearch:
+      # ES 健康检查超时时间（毫秒），默认 1000ms
       response-timeout: 1000ms
+
+# 日志配置
 logging:
   file:
     path: /var/logs
   level:
     root: info
     com.macro.mall: info
+
+# Logstash 配置（ELK 日志收集，可选）
 logstash:
   host: 8.134.65.121

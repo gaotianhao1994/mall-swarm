@@ -1,36 +1,97 @@
+# ============================================================
+#  mall-admin 后台管理服务 生产环境 Nacos 配置
+#
+#  【这个文件的作用】
+#  后台管理服务的运行时配置，通过 Nacos 配置中心下发给 mall-admin 容器。
+#  应用启动时会从 Nacos 拉取此配置（dataId: mall-admin-prod.yaml）。
+#
+#  【配置项说明】
+#
+#  1. 阿里云 OSS 配置
+#     mall-admin 支持将图片上传到阿里云 OSS 对象存储。
+#     - endpoint: OSS 服务地址（深圳区域）
+#     - accessKeyId/accessKeySecret: 阿里云访问凭证（当前是测试值）
+#     - bucketName: 存储桶名称
+#     - policy.expire: 上传策略过期时间（秒）
+#     - maxSize: 最大上传文件大小（MB）
+#     - callback: 上传成功后的回调地址，指向 Gateway → mall-admin
+#       注意：必须通过 Gateway 转发，因为 mall-admin 跑在 tengxun-server9
+#     - dir.prefix: 上传文件的目录前缀
+#
+#  2. 数据源配置（MySQL）
+#     连接 tengxun-server9 上的 mall-mysql 容器。
+#     使用公网 IP 106.53.132.192 因为 mall-admin 虽然在同一台服务器，
+#     但 Docker 容器间通过 IP 通信更可靠。
+#
+#  3. Redis 配置
+#     用于 Sa-Token 会话管理、缓存等。
+#
+#  4. Minio 配置（本地对象存储，可选）
+#     Minio 是阿里云 OSS 的开源替代方案，适合本地开发/测试。
+#     当前指向 tengxun-server 的 9000 端口（如果未部署 Minio 则忽略）。
+#
+#  5. 日志和 Logstash 配置
+#     与 mall-gateway 相同的日志配置。
+#
+#  【部署位置】
+#  通过 import-config.sh 脚本导入到 Nacos。
+# ============================================================
+
+# 阿里云 OSS 对象存储配置（用于图片上传）
 aliyun:
   oss:
+    # OSS 服务端点（深圳区域）
     endpoint: oss-cn-shenzhen.aliyuncs.com
+    # 访问凭证（⚠️ 当前是测试值，生产环境需替换为真实凭证）
     accessKeyId: test
     accessKeySecret: test
+    # 存储桶名称
     bucketName: macro-oss
     policy:
+      # 上传策略过期时间（秒），5 分钟
       expire: 300
+    # 最大上传文件大小（MB）
     maxSize: 10
+    # 上传成功回调地址
+    # 必须通过 Gateway 转发（8201 端口），因为 mall-admin 在 tengxun-server9 上
+    # 如果直接指向 106.53.132.192:8080 也行，但不走 Gateway 就没有鉴权保护
     callback: http://106.53.106.41:8201/mall-admin/aliyun/oss/callback
     dir:
+      # 上传文件的目录前缀
       prefix: mall/images/
+
 spring:
+  # MySQL 数据源配置
   datasource:
+    # 连接地址：tengxun-server9 的 MySQL，数据库名 mall
     url: jdbc:mysql://106.53.132.192:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: Mall@2026_root
   data:
+    # Redis 配置（与 mall-gateway 共用同一个 Redis）
     redis:
       host: 106.53.132.192
       database: 0
       port: 6379
       password: Mall@2026_redis
+
+# Minio 本地对象存储配置（可选，阿里云 OSS 的开源替代）
 minio:
+  # Minio 服务地址（tengxun-server 上，如果未部署则忽略）
   endpoint: http://106.53.106.41:9000
   bucketName: mall
+  # Minio 默认账号（生产环境应修改）
   accessKey: minioadmin
   secretKey: minioadmin
+
+# 日志配置
 logging:
   file:
     path: /var/logs
   level:
     root: info
     com.macro.mall: info
+
+# Logstash 配置（ELK 日志收集，可选）
 logstash:
   host: 8.134.65.121
