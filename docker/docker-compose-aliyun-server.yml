@@ -1,36 +1,110 @@
 # ============================================================
 #  mall-swarm 扩展服务器编排 — aliyun-server (8.134.65.121)
-#  组件: RabbitMQ + MongoDB + Portal + Monitor
 #
-#  使用方式:
-#    docker compose -f docker-compose-aliyun-server.yml up -d
+#  【这个文件的作用】
+#  定义 aliyun-server 上所有需要运行的 Docker 容器。
+#  这台服务器是"扩展服务"，承载前台商城和辅助服务。
+#
+#  【服务器角色】
+#  aliyun-server 负责前台商城相关的服务：
+#  1. RabbitMQ: 消息队列（订单超时取消等异步任务）
+#  2. MongoDB: 文档数据库（首页内容、浏览历史等非结构化数据）
+#  3. mall-portal: 前台商城 API（首页、商品、购物车、订单等）
+#  4. mall-monitor: Spring Boot Admin 监控面板（可选）
+#
+#  【端口规划】
+#  5672  → mall-rabbitmq（AMQP 协议端口，仅内网用）
+#  15672 → mall-rabbitmq（RabbitMQ 管理界面，可对外访问）
+#  27017 → mall-mongo（MongoDB 端口，仅内网用）
+#  8085  → mall-portal（前台商城 API，仅 Gateway 访问）
+#  8101  → mall-monitor（监控面板，可对外访问）
+#
+#  【与其他服务器的关系】
+#  - tengxun-server 的 Gateway 通过公网 IP 访问这里的 mall-portal
+#  - mall-portal 通过公网 IP 访问 tengxun-server9 的 MySQL 和 Redis
+#  - mall-portal 通过本机 IP 访问 MongoDB 和 RabbitMQ（同一服务器）
+#
+#  【为什么 mall-portal 放在阿里云？】
+#  1. 前台商城是面向用户的，阿里云的网络质量更好
+#  2. 均衡三台服务器的负载（tengxun-server 已经很满了）
+#  3. 阿里云磁盘更大（79G vs 40G），适合存储日志
+#
+#  【启动方式】
+#  docker compose -f docker-compose-aliyun-server.yml up -d
 # ============================================================
 
 services:
 
   # ==================== 基础设施 ====================
 
+  # ------------------------------------------------------------
+  #  RabbitMQ 3.9 — 消息队列
+  #
+  #  【作用】
+  #  mall-portal 使用 RabbitMQ 处理异步任务：
+  #  - 订单超时自动取消（cancelOrderQueue 队列）
+  #    用户下单后 30 分钟未支付，自动取消订单并释放库存
+  #  - 库存扣减确认
+  #  - 其他需要异步处理的业务
+  #
+  #  【访问方式】
+  #  管理界面：http://8.134.65.121:15672（用户名/密码: mall/mall）
+  #  AMQP 端口：5672（应用连接用）
+  #
+  #  【配置说明】
+  #  - management 镜像包含管理界面（比普通镜像大但方便管理）
+  #  - virtual-host: /mall（虚拟主机隔离，不同项目用不同的 vhost）
+  #  - 用户名密码通过环境变量设置
+  #
+  #  【数据持久化】
+  #  RabbitMQ 数据（队列、交换机、消息）挂载到宿主机。
+  # ------------------------------------------------------------
   rabbitmq:
     image: rabbitmq:3.9.11-management
     container_name: mall-rabbitmq
     restart: always
     environment:
+      # 默认用户和密码（首次启动时创建）
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-mall}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-mall}
+      # 虚拟主机（隔离不同项目的队列）
       RABBITMQ_DEFAULT_VHOST: /mall
       TZ: Asia/Shanghai
     ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+      - "${RABBITMQ_PORT:-5672}:5672"       # AMQP 协议端口（应用连接）
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"  # 管理界面（浏览器访问）
     volumes:
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/rabbitmq:/var/lib/rabbitmq
     healthcheck:
+      # 检查 AMQP 端口是否可连接
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 15s
       timeout: 10s
       retries: 10
+      # RabbitMQ 启动需要 60 秒（加载插件、初始化 vhost）
       start_period: 60s
 
+  # ------------------------------------------------------------
+  #  MongoDB 4 — 文档数据库
+  #
+  #  【作用】
+  #  mall-portal 使用 MongoDB 存储非关系型数据：
+  #  - 首页内容（广告列表、专题推荐、品牌推荐等）
+  #  - 会员浏览历史
+  #  - 商品收藏
+  #  - 会员关注的品牌
+  #
+  #  【为什么用 MongoDB 而不是 MySQL？】
+  #  首页内容等数据结构不固定（不同广告可能有不同字段），
+  #  MongoDB 的文档模型比 MySQL 的表结构更灵活。
+  #
+  #  【访问方式】
+  #  mongo shell：docker exec -it mall-mongo mongo
+  #  数据库名：mall-port（⚠️ 必须与 mall-portal 配置一致）
+  #
+  #  【数据持久化】
+  #  MongoDB 数据文件挂载到宿主机。
+  # ------------------------------------------------------------
   mongo:
     image: mongo:4
     container_name: mall-mongo
@@ -42,6 +116,7 @@ services:
     volumes:
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/mongo:/data/db
     healthcheck:
+      # 通过 adminCommand('ping') 检查 MongoDB 是否就绪
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 15s
       timeout: 5s
@@ -50,6 +125,40 @@ services:
 
   # ==================== 应用服务 ====================
 
+  # ------------------------------------------------------------
+  #  mall-portal — 前台商城业务服务
+  #
+  #  【作用】
+  #  提供商城 H5 前端的全部 API：
+  #  - /home/*: 首页内容（广告、品牌、新品、热卖、推荐）
+  #  - /product/*: 商品浏览（分类、搜索、详情）
+  #  - /cart/*: 购物车（添加、删除、更新数量）
+  #  - /order/*: 订单（生成、支付、取消、确认收货）
+  #  - /sso/*: 会员登录、注册、获取验证码
+  #  - /member/*: 会员中心（地址、收藏、浏览历史、优惠券）
+  #  - /brand/*: 品牌浏览
+  #  - /alipay/*: 支付宝支付
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:8085) → Gateway(:8201) → mall-portal(:8085)
+  #  注意：前端 Nginx 端口 8085 和 mall-portal 端口 8085 是不同的！
+  #  前端 Nginx 在 tengxun-server (106.53.106.41)
+  #  mall-portal 在 aliyun-server (8.134.65.121)
+  #
+  #  【依赖的中间件（最多）】
+  #  - MySQL (跨服务器): 商品、订单、会员等业务数据
+  #  - Redis (跨服务器): 会话管理、缓存
+  #  - MongoDB (本机): 首页内容、浏览历史
+  #  - RabbitMQ (本机): 异步消息
+  #  - Nacos (跨服务器): 服务注册和配置
+  #
+  #  【为什么 mall-portal 依赖最多？】
+  #  mall-portal 是面向用户的前台服务，功能最全面：
+  #  - MySQL 存结构化数据（订单、商品）
+  #  - MongoDB 存非结构化数据（首页内容）
+  #  - RabbitMQ 处理异步任务（订单超时取消）
+  #  - Redis 做缓存和会话
+  # ------------------------------------------------------------
   mall-portal:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-portal-latest
     container_name: mall-portal
@@ -58,17 +167,23 @@ services:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
       SPRING_PROFILES_ACTIVE: prod
+      # Nacos 地址（公网 IP，跨服务器）
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      # 注册到 Nacos 的公网 IP（⚠️ 必须设置，否则 Gateway 找不到 mall-portal）
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 8.134.65.121
-      # 中间件地址（环境变量直传，绕过NacosConfig客户端bug）
+      # MySQL 连接（跨服务器，用 tengxun-server9 的公网 IP）
       SPRING_DATASOURCE_URL: jdbc:mysql://${MYSQL_ADDR:-106.53.132.192}:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      # Redis 连接（跨服务器，用 tengxun-server9 的公网 IP）
       SPRING_DATA_REDIS_HOST: ${REDIS_ADDR:-106.53.132.192}
       SPRING_DATA_REDIS_PORT: "6379"
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-Mall@2026_redis}
+      # MongoDB 连接（本机，用容器名或 localhost 都行）
+      # ⚠️ 数据库名 mall-port 必须与 Nacos 配置一致
       SPRING_DATA_MONGODB_URI: mongodb://${MONGO_ADDR:-8.134.65.121}:27017/mall-port
+      # RabbitMQ 连接（本机）
       SPRING_RABBITMQ_HOST: ${RABBITMQ_ADDR:-8.134.65.121}
       SPRING_RABBITMQ_PORT: "5672"
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER:-mall}
@@ -79,6 +194,7 @@ services:
     volumes:
       - ${LOG_DIR:-/root/projects/mall-swarm/logs}/portal:/var/logs
     depends_on:
+      # 必须等 RabbitMQ 和 MongoDB 都健康后才能启动
       rabbitmq:
         condition: service_healthy
       mongo:
@@ -88,8 +204,30 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      # mall-portal 依赖最多，启动最慢，需要 120 秒
       start_period: 120s
 
+  # ------------------------------------------------------------
+  #  mall-monitor — Spring Boot Admin 监控面板
+  #
+  #  【作用】
+  #  提供微服务监控界面，可以看到：
+  #  - 各服务的运行状态（是否健康）
+  #  - JVM 内存、GC 情况
+  #  - HTTP 请求统计
+  #  - 日志级别动态调整
+  #
+  #  【访问方式】
+  #  http://8.134.65.121:8101
+  #  所有注册到 Nacos 的服务都会被自动监控
+  #
+  #  【是否必须部署？】
+  #  不是必须的。mall-monitor 是辅助工具，方便运维监控。
+  #  如果不需要监控面板，可以不部署。
+  #
+  #  【内存分配】
+  #  mall-monitor 比较轻量，192MB-256MB 够用。
+  # ------------------------------------------------------------
   mall-monitor:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-monitor-latest
     container_name: mall-monitor
@@ -98,8 +236,10 @@ services:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Xms192m -Xmx256m -XX:+UseG1GC"
       SPRING_PROFILES_ACTIVE: prod
+      # Nacos 地址（公网 IP）
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      # 注册到 Nacos 的公网 IP
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 8.134.65.121
     ports:
       - "${MONITOR_PORT:-8101}:8101"

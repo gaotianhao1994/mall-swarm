@@ -1,63 +1,166 @@
 # ============================================================
 #  mall-swarm 网关服务器编排 — tengxun-server (106.53.106.41)
-#  组件: Nacos + Elasticsearch + Gateway + Search + Nginx
 #
-#  使用方式:
-#    docker compose -f docker-compose-tengxun-server.yml up -d
+#  【这个文件的作用】
+#  定义 tengxun-server 上所有需要运行的 Docker 容器。
+#  一条命令启动/停止所有服务：docker compose -f docker-compose-tengxun-server.yml up -d
+#
+#  【服务器角色】
+#  tengxun-server 是整个系统的"流量入口"，负责：
+#  1. Nacos: 服务注册和配置中心（所有微服务都注册到这里）
+#  2. Elasticsearch: 全文搜索引擎（商品搜索用）
+#  3. Gateway: API 网关（所有外部请求的统一入口）
+#  4. Search: 商品搜索服务（连接 ES + MySQL）
+#  5. 前端 Nginx: 两个前端的静态文件服务器 + API 反向代理
+#
+#  【端口规划】
+#  80    → mall-admin-nginx（后台管理前端，对外暴露）
+#  8085  → mall-app-nginx（商城 H5 前端，对外暴露）
+#  8201  → mall-gateway（API 网关，对外暴露但建议仅前端访问）
+#  8848  → mall-nacos（Nacos 控制台，仅内网/调试用）
+#  9200  → mall-elasticsearch（ES HTTP 接口，仅内网用）
+#  9300  → mall-elasticsearch（ES 集群通信端口）
+#  8081  → mall-search（搜索服务，仅内网用）
+#  9848/9849 → mall-nacos（Nacos gRPC 端口）
+#
+#  【启动顺序】
+#  1. nacos 和 elasticsearch 先启动（基础设施）
+#  2. mall-gateway 等 nacos healthy 后启动
+#  3. mall-search 等 nacos + elasticsearch 都 healthy 后启动
+#  4. mall-admin-nginx 和 mall-app-nginx 等 mall-gateway healthy 后启动
+#
+#  【使用方式】
+#    docker compose -f docker-compose-tengxun-server.yml up -d        # 启动所有
+#    docker compose -f docker-compose-tengxun-server.yml up -d nacos  # 只启动 nacos
+#    docker compose -f docker-compose-tengxun-server.yml logs -f      # 查看日志
+#    docker compose -f docker-compose-tengxun-server.yml ps          # 查看状态
+#    docker compose -f docker-compose-tengxun-server.yml down        # 停止所有
+#
+#  【环境变量】
+#  大部分配置通过 .env 文件定义（ACR_REGISTRY、密码、路径等）。
+#  如果 .env 文件不存在，使用 ${xxx:-默认值} 中的默认值。
+#  .env 文件位置：docker/.env（⚠️ 含密码，已在 .gitignore 中）
+#
+#  【镜像来源】
+#  - ACR 镜像（crpi-9lhedueyyvqzcyrk.cn-guangzhou...）：我们的 Java 服务和前端
+#  - Docker Hub 公共镜像（nacos/nacos-server、elasticsearch）：第三方基础设施
+#
+#  【数据持久化】
+#  所有有状态服务的数据都挂载到宿主机目录（通过 ${DATA_DIR} 环境变量），
+#  确保容器重建后数据不丢失。日志挂载到 ${LOG_DIR} 目录。
 # ============================================================
 
 services:
 
   # ==================== 基础设施 ====================
 
+  # ------------------------------------------------------------
+  #  Nacos — 服务注册中心 + 配置中心
+  #
+  #  【作用】
+  #  - 服务注册：所有微服务启动时注册到这里，Gateway 根据注册信息路由请求
+  #  - 配置管理：各服务的运行时配置（数据库地址、Redis 地址等）存储在 Nacos
+  #  - 健康检查：定期检测服务是否存活
+  #
+  #  【访问方式】
+  #  控制台：http://106.53.106.41:8848/nacos（用户名/密码: nacos/nacos 或无密码）
+  #  API：http://106.53.106.41:8848/nacos/v1/ns/instance/list?serviceName=xxx
+  #
+  #  【为什么用 v2.1.0？】
+  #  Spring Cloud Alibaba 2021.x 对应 Nacos 2.x，版本要匹配。
+  #  Nacos 2.x 使用 gRPC 通信（端口 9848/9849），比 1.x 更高效。
+  #
+  #  【内存分配】
+  #  JVM 最小 256MB，最大 512MB，年轻代 128MB。
+  #  Nacos 比较吃内存，但 4 核 4G 的服务器可以承受。
+  # ------------------------------------------------------------
   nacos:
     image: nacos/nacos-server:v2.1.0
     container_name: mall-nacos
     restart: always
     environment:
+      # standalone: 单机模式（开发/测试用，生产建议 cluster 模式）
       MODE: standalone
+      # 使用 hostname 作为服务注册地址（而非 IP）
       PREFER_HOST_MODE: hostname
+      # 关闭 Nacos 认证（简化部署，生产环境建议开启）
       NACOS_AUTH_ENABLE: "false"
+      # 认证 Token（即使关闭认证也需要设置，否则启动报错）
       NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:-SecretKey012345678901234567890123456789012345678901234567890123456789}
       NACOS_AUTH_IDENTITY_KEY: serverIdentity
       NACOS_AUTH_IDENTITY_VALUE: security
-      JVM_XMS: 256m
-      JVM_XMX: 512m
-      JVM_XMN: 128m
-      TZ: Asia/Shanghai
+      # JVM 内存配置
+      JVM_XMS: 256m     # 初始堆内存
+      JVM_XMX: 512m     # 最大堆内存
+      JVM_XMN: 128m     # 年轻代大小
+      TZ: Asia/Shanghai  # 时区
     ports:
-      - "${NACOS_PORT:-8848}:8848"
-      - "9848:9848"
-      - "9849:9849"
+      - "${NACOS_PORT:-8848}:8848"    # HTTP API 和控制台
+      - "9848:9848"                   # gRPC 端口（Nacos 2.x 服务间通信）
+      - "9849:9849"                   # gRPC 端口（客户端请求转发）
     volumes:
+      # 日志持久化到宿主机
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/nacos:/home/nacos/logs
     healthcheck:
+      # 通过 Nacos 的健康检查接口判断是否就绪
       test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/liveness"]
       interval: 15s
       timeout: 10s
       retries: 10
+      # 启动需要 60 秒（Nacos 初始化比较慢）
       start_period: 60s
 
+  # ------------------------------------------------------------
+  #  Elasticsearch — 全文搜索引擎
+  #
+  #  【作用】
+  #  mall-search 服务使用 ES 做商品搜索：
+  #  - 商品名称/描述全文搜索
+  #  - 按分类、品牌、价格筛选
+  #  - 搜索联想词、热门搜索
+  #
+  #  【访问方式】
+  #  HTTP API：http://106.53.106.41:9200
+  #  集群健康：http://106.53.106.41:9200/_cluster/health
+  #  索引列表：http://106.53.106.41:9200/_cat/indices
+  #
+  #  【注意事项】
+  #  1. 必须安装 IK 中文分词插件，否则商品搜索会报错
+  #  2. ES 比较吃内存（JVM 堆设为 512MB），4G 服务器勉强够用
+  #  3. xpack.security 关闭（简化部署，生产建议开启）
+  #
+  #  【IK 插件安装】（首次部署时执行一次）
+  #  docker exec mall-elasticsearch bin/elasticsearch-plugin install
+  #    -b https://get.infini.cloud/elasticsearch/analysis-ik/7.17.3
+  # ------------------------------------------------------------
   elasticsearch:
     image: elasticsearch:7.17.3
     container_name: mall-elasticsearch
     restart: always
     environment:
+      # 单节点模式（不需要集群，节省内存）
       discovery.type: single-node
+      # JVM 堆内存：最小 512MB，最大 512MB（固定大小避免动态调整开销）
       ES_JAVA_OPTS: -Xms512m -Xmx512m
+      # 集群名称（单节点也有名字）
       cluster.name: mall-es
+      # 锁定内存，防止 ES 使用 swap（性能关键）
       bootstrap.memory_lock: "true"
+      # 关闭安全认证（简化部署）
       xpack.security.enabled: "false"
       TZ: Asia/Shanghai
     ulimits:
+      # 解除内存锁定限制（ES 要求）
       memlock:
         soft: -1
         hard: -1
     ports:
-      - "${ES_PORT:-9200}:9200"
-      - "${ES_TCP_PORT:-9300}:9300"
+      - "${ES_PORT:-9200}:9200"    # HTTP API 端口
+      - "${ES_TCP_PORT:-9300}:9300"  # 集群节点间通信端口
     volumes:
+      # 数据持久化（索引数据不会因容器重建丢失）
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/es/data:/usr/share/elasticsearch/data
+      # 插件目录（IK 分词插件安装在这里）
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/es/plugins:/usr/share/elasticsearch/plugins
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
@@ -68,18 +171,52 @@ services:
 
   # ==================== 应用服务 ====================
 
+  # ------------------------------------------------------------
+  #  mall-gateway — API 网关（所有外部请求的统一入口）
+  #
+  #  【作用】
+  #  - 路由：根据 URL 前缀转发到对应的微服务
+  #    /mall-admin/*  → mall-admin（后台管理）
+  #    /mall-auth/*   → mall-auth（认证授权）
+  #    /mall-portal/* → mall-portal（前台商城）
+  #    /mall-search/* → mall-search（商品搜索）
+  #  - 鉴权：Sa-Token 检查用户是否登录、是否有权限
+  #  - 跨域：处理浏览器的 CORS 预检请求
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:80/8085) → Gateway(:8201) → 具体微服务
+  #  或者直接：浏览器 → Gateway(:8201)（不推荐，无限流保护）
+  #
+  #  【环境变量说明】
+  #  - SPRING_PROFILES_ACTIVE=prod: 使用 application-prod.yml 配置
+  #  - SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: Nacos 地址
+  #    使用容器名 nacos（Docker 网络自动解析），不是 IP
+  #  - SPRING_CLOUD_NACOS_DISCOVERY_IP: 注册到 Nacos 的 IP
+  #    必须用公网 IP（106.53.106.41），否则跨服务器的服务找不到它
+  #  - SPRING_DATA_REDIS_*: Redis 连接信息（直传，绕过 Nacos 配置客户端 bug）
+  #
+  #  【为什么 Redis 地址是 106.53.132.192 而不是 mall-redis？】
+  #  Redis 跑在 tengxun-server9 上，不在同一台服务器。
+  #  Docker 容器名只在同一 Docker 网络内有效，跨服务器必须用 IP。
+  # ------------------------------------------------------------
   mall-gateway:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-gateway-latest
     container_name: mall-gateway
     restart: always
     environment:
       TZ: Asia/Shanghai
+      # JVM 参数：初始 256MB，最大 384MB，使用 G1 垃圾回收器
       JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
+      # 使用生产环境配置
       SPRING_PROFILES_ACTIVE: prod
+      # Nacos 地址（使用容器名，Docker 网络自动解析）
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
+      # ⚠️ 关键：注册到 Nacos 的 IP 必须是公网 IP
+      # 如果不设置，Gateway 会自动检测到 Docker 内部 IP（如 172.18.0.4），
+      # 其他服务器的服务无法通过这个 IP 访问到 Gateway
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 106.53.106.41
-      # 中间件地址（环境变量直传，绕过NacosConfig客户端bug）
+      # Redis 连接（直传环境变量，确保不被 Nacos 配置覆盖）
       SPRING_DATA_REDIS_HOST: ${REDIS_ADDR:-106.53.132.192}
       SPRING_DATA_REDIS_PORT: "6379"
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-Mall@2026_redis}
@@ -88,6 +225,7 @@ services:
     volumes:
       - ${LOG_DIR:-/root/projects/mall-swarm/logs}/gateway:/var/logs
     depends_on:
+      # 必须等 Nacos 健康后才能启动（Gateway 需要注册到 Nacos）
       nacos:
         condition: service_healthy
     healthcheck:
@@ -95,8 +233,25 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      # Java 服务启动需要 90 秒（Spring Boot + Nacos 注册）
       start_period: 90s
 
+  # ------------------------------------------------------------
+  #  mall-search — 商品搜索服务
+  #
+  #  【作用】
+  #  提供商品搜索 API，前端调用 /mall-search/* 接口。
+  #  内部连接 MySQL 读取商品数据，同步到 Elasticsearch 做搜索。
+  #
+  #  【依赖】
+  #  - Nacos: 服务注册
+  #  - Elasticsearch: 搜索引擎
+  #  - MySQL: 读取商品数据（跨服务器，用公网 IP）
+  #
+  #  【环境变量说明】
+  #  与 Gateway 类似，Nacos 地址用容器名，MySQL 用公网 IP。
+  #  SPRING_ELASTICSEARCH_URIS: ES 地址（本机上的 mall-elasticsearch）
+  # ------------------------------------------------------------
   mall-search:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-search-latest
     container_name: mall-search
@@ -107,17 +262,20 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: nacos:8848
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: nacos:8848
+      # 注册到 Nacos 的公网 IP
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 106.53.106.41
-      # 中间件地址（环境变量直传，绕过NacosConfig客户端bug）
+      # MySQL 连接（跨服务器，用 tengxun-server9 的公网 IP）
       SPRING_DATASOURCE_URL: jdbc:mysql://${MYSQL_ADDR:-106.53.132.192}:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      # Elasticsearch 地址（本机上的 mall-elasticsearch 容器）
       SPRING_ELASTICSEARCH_URIS: http://${ES_ADDR:-106.53.106.41}:9200
     ports:
       - "${SEARCH_PORT:-8081}:8081"
     volumes:
       - ${LOG_DIR:-/root/projects/mall-swarm/logs}/search:/var/logs
     depends_on:
+      # 必须等 Nacos 和 ES 都健康后才能启动
       nacos:
         condition: service_healthy
       elasticsearch:
@@ -131,27 +289,80 @@ services:
 
   # ==================== 前端 ====================
 
+  # ------------------------------------------------------------
+  #  mall-admin-nginx — 后台管理前端
+  #
+  #  【作用】
+  #  提供后台管理系统的 Web 界面：
+  #  - 静态文件：返回 HTML/JS/CSS（Vue3 + Vite 构建产物）
+  #  - API 代理：将 /mall-admin/* 请求转发给 Gateway
+  #
+  #  【访问方式】
+  #  浏览器访问：http://106.53.106.41（端口 80）
+  #  登录账号：admin / macro123
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:80) → Gateway(:8201) → mall-admin(:8080 on server9)
+  #
+  #  【镜像说明】
+  #  使用 mall-admin-web-latest 镜像，这是多阶段构建的产物：
+  #  Stage 1: Node.js 执行 npm run build 编译前端代码
+  #  Stage 2: Nginx 服务编译后的静态文件
+  #  所以镜像里自带 Nginx，容器名叫 "nginx" 是因为它本质是个 Nginx 服务
+  #
+  #  【为什么依赖 Gateway？】
+  #  前端的 API 请求需要通过 Gateway 转发到后端微服务。
+  #  虽然前端 Nginx 和 Gateway 在同一台服务器，
+  #  但使用 depends_on 确保 Gateway 先启动，前端才能正常代理 API。
+  # ------------------------------------------------------------
   mall-admin-nginx:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-admin-web-latest
     container_name: mall-admin-nginx
     restart: always
     ports:
+      # 端口 80 是 HTTP 默认端口，浏览器输入 http://106.53.106.41 即可访问
       - "80:80"
     depends_on:
+      # 等 Gateway 启动后才启动（前端 API 依赖 Gateway）
       mall-gateway:
         condition: service_healthy
     healthcheck:
+      # 检查 Nginx 是否能正常返回静态页面
       test: ["CMD", "curl", "-f", "http://localhost:80/"]
       interval: 30s
       timeout: 5s
       retries: 3
+      # Nginx 启动很快，10 秒就够了
       start_period: 10s
 
+  # ------------------------------------------------------------
+  #  mall-app-nginx — 商城 H5 前端
+  #
+  #  【作用】
+  #  提供商城 H5 页面的 Web 界面（uni-app 构建的移动端网页）：
+  #  - 静态文件：返回 HTML/JS/CSS（uni-app H5 构建产物）
+  #  - API 代理：将 /mall-portal/*、/mall-search/* 等请求转发给 Gateway
+  #
+  #  【访问方式】
+  #  浏览器访问：http://106.53.106.41:8085
+  #  无需登录即可浏览商品
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:8085) → Gateway(:8201) → mall-portal(:8085 on aliyun)
+  #  注意：前端 Nginx 端口 8085 和 mall-portal 后端端口 8085 是不同的！
+  #  前端 Nginx 在 tengxun-server 上，mall-portal 在 aliyun-server 上
+  #
+  #  【镜像说明】
+  #  使用 mall-app-web-latest 镜像，同样是多阶段构建：
+  #  Stage 1: Node.js 执行 npm run build:h5（uni-app H5 构建）
+  #  Stage 2: Nginx 服务编译后的静态文件
+  # ------------------------------------------------------------
   mall-app-nginx:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-app-web-latest
     container_name: mall-app-nginx
     restart: always
     ports:
+      # 端口 8085（HTTP 需要带端口号访问）
       - "8085:80"
     depends_on:
       mall-gateway:

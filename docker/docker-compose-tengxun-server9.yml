@@ -1,21 +1,69 @@
 # ============================================================
 #  mall-swarm 数据服务器编排 — tengxun-server9 (106.53.132.192)
-#  组件: MySQL + Redis + Admin + Auth
 #
-#  使用方式:
-#    docker compose -f docker-compose-tengxun-server9.yml up -d
+#  【这个文件的作用】
+#  定义 tengxun-server9 上所有需要运行的 Docker 容器。
+#  这台服务器是"数据中心"，存储所有业务数据和核心业务逻辑。
+#
+#  【服务器角色】
+#  tengxun-server9 是整个系统的"数据大脑"，负责：
+#  1. MySQL: 主数据库（所有服务共用同一个 mall 数据库）
+#  2. Redis: 缓存和会话管理（所有服务共用同一个 Redis）
+#  3. mall-admin: 后台管理业务逻辑（商品管理、订单管理、用户管理等）
+#  4. mall-auth: 认证授权服务（管理员登录、Token 管理等）
+#
+#  【端口规划】
+#  3306  → mall-mysql（MySQL 数据库，仅内网用）
+#  6379  → mall-redis（Redis 缓存，仅内网用）
+#  8080  → mall-admin（后台管理 API，仅 Gateway 访问）
+#  8401  → mall-auth（认证授权 API，仅 Gateway 访问）
+#
+#  【与其他服务器的关系】
+#  - tengxun-server 的 Gateway 通过公网 IP 访问这里的 mall-admin 和 mall-auth
+#  - aliyun-server 的 mall-portal 通过公网 IP 访问这里的 MySQL 和 Redis
+#  - 所有跨服务器通信都使用公网 IP（Docker 容器名只在同一网络内有效）
+#
+#  【启动方式】
+#  docker compose -f docker-compose-tengxun-server9.yml up -d
 # ============================================================
 
 services:
 
   # ==================== 基础设施 ====================
 
+  # ------------------------------------------------------------
+  #  MySQL 5.7 — 主数据库
+  #
+  #  【作用】
+  #  存储所有业务数据：
+  #  - ums_* 表：用户、管理员、角色、权限
+  #  - pms_* 表：商品、品牌、分类、属性
+  #  - oms_* 表：订单、订单项、收货地址
+  #  - sms_* 表：营销活动、优惠券、广告
+  #  - cms_* 表：内容管理（首页推荐等）
+  #
+  #  【数据初始化】
+  #  首次启动时，Docker 会执行 sql/init/ 目录下的 SQL 文件创建表和初始数据。
+  #  挂载方式：./sql/init:/docker-entrypoint-initdb.d:ro（只读）
+  #  注意：只有首次启动时才会执行 init 脚本，已有数据不会重复执行。
+  #
+  #  【MySQL 优化参数】
+  #  - character-set-server=utf8mb4: 支持 emoji 等 4 字节字符
+  #  - max_connections=200: 最大连接数（4G 内存够用）
+  #  - innodb_buffer_pool_size=256M: InnoDB 缓冲池大小（约占内存 25%）
+  #
+  #  【数据持久化】
+  #  MySQL 数据文件挂载到宿主机 data/mysql/data 目录，
+  #  即使容器删除重建，数据也不会丢失。
+  # ------------------------------------------------------------
   mysql:
     image: mysql:5.7
     container_name: mall-mysql
     restart: always
     environment:
+      # root 密码（⚠️ 生产环境必须修改）
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      # 首次启动时自动创建的数据库名
       MYSQL_DATABASE: mall
       TZ: Asia/Shanghai
     command: >
@@ -27,17 +75,41 @@ services:
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     volumes:
+      # MySQL 数据文件（最重要的数据，必须持久化）
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/data:/var/lib/mysql
+      # MySQL 自定义配置文件
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/conf:/etc/mysql/conf.d
+      # MySQL 日志
       - ${DATA_DIR:-/root/projects/mall-swarm/data}/mysql/log:/var/log/mysql
+      # 初始化 SQL 脚本（首次启动执行，创建表和初始数据）
       - ./sql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
+      # 通过 mysqladmin ping 检查 MySQL 是否就绪
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-Mall@2026_root}"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 30s
 
+  # ------------------------------------------------------------
+  #  Redis 7 — 缓存和会话管理
+  #
+  #  【作用】
+  #  所有微服务共用同一个 Redis，用于：
+  #  - Sa-Token 会话存储（用户登录状态）
+  #  - 验证码缓存（登录验证码、短信验证码）
+  #  - 商品库存扣减（分布式锁）
+  #  - 接口限流计数器
+  #
+  #  【配置说明】
+  #  - appendonly yes: 开启 AOF 持久化（比 RDB 更安全）
+  #  - maxmemory 128mb: 最大内存 128MB（4G 服务器够用）
+  #  - maxmemory-policy allkeys-lru: 内存满时淘汰最近最少使用的 key
+  #  - requirepass: 设置密码（所有服务连接时都需要密码）
+  #
+  #  【数据持久化】
+  #  Redis 数据文件挂载到宿主机 data/redis 目录。
+  # ------------------------------------------------------------
   redis:
     image: redis:7
     container_name: mall-redis
@@ -61,6 +133,35 @@ services:
 
   # ==================== 应用服务 ====================
 
+  # ------------------------------------------------------------
+  #  mall-admin — 后台管理业务服务
+  #
+  #  【作用】
+  #  提供后台管理系统的全部 API：
+  #  - /admin/*: 管理员 CRUD、登录、权限分配
+  #  - /product/*: 商品管理（增删改查、上下架）
+  #  - /order/*: 订单管理（查看、发货、退款）
+  #  - /brand/*: 品牌管理
+  #  - /menu/*: 菜单管理
+  #  - /resource/*: 资源管理（API 权限）
+  #  - /role/*: 角色管理
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:80) → Gateway(:8201) → mall-admin(:8080)
+  #
+  #  【环境变量说明】
+  #  - SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: Nacos 地址
+  #    使用公网 IP（106.53.106.41:8848）而非容器名，因为跨服务器
+  #  - SPRING_CLOUD_NACOS_DISCOVERY_IP: 注册到 Nacos 的公网 IP
+  #    必须设置，否则 Gateway 找不到 mall-admin
+  #  - MySQL/Redis: 使用容器名（mall-mysql/mall-redis），因为同一台服务器
+  #    Docker 容器名在同一网络内可以解析
+  #
+  #  【为什么用容器名连接 MySQL/Redis？】
+  #  mall-admin 和 MySQL/Redis 在同一台服务器（tengxun-server9），
+  #  也在同一个 Docker 网络中，所以可以用容器名通信。
+  #  但 Nacos 必须用公网 IP，因为 Nacos 在 tengxun-server 上。
+  # ------------------------------------------------------------
   mall-admin:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-admin-latest
     container_name: mall-admin
@@ -69,13 +170,16 @@ services:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Xms256m -Xmx384m -XX:+UseG1GC"
       SPRING_PROFILES_ACTIVE: prod
+      # Nacos 地址（公网 IP，因为 Nacos 在另一台服务器）
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      # 注册到 Nacos 的公网 IP（Gateway 需要通过这个 IP 访问 mall-admin）
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 106.53.132.192
-      # 中间件地址（环境变量直传，使用 Docker 容器名通信）
+      # MySQL 连接（使用容器名，同一 Docker 网络内可解析）
       SPRING_DATASOURCE_URL: jdbc:mysql://mall-mysql:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Mall@2026_root}
+      # Redis 连接（使用容器名）
       SPRING_DATA_REDIS_HOST: mall-redis
       SPRING_DATA_REDIS_PORT: "6379"
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-Mall@2026_redis}
@@ -84,6 +188,7 @@ services:
     volumes:
       - ${LOG_DIR:-/root/projects/mall-swarm/logs}/admin:/var/logs
     depends_on:
+      # 必须等 MySQL 和 Redis 都健康后才能启动
       mysql:
         condition: service_healthy
       redis:
@@ -93,20 +198,41 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      # Java 服务 + 数据库初始化需要 120 秒
       start_period: 120s
 
+  # ------------------------------------------------------------
+  #  mall-auth — 认证授权服务
+  #
+  #  【作用】
+  #  提供认证授权 API：
+  #  - /sso/login: 管理员登录（返回 Sa-Token）
+  #  - /sso/logout: 管理员登出
+  #  - /sso/info: 获取当前登录信息
+  #
+  #  【请求链路】
+  #  浏览器 → Nginx(:80) → Gateway(:8201) → mall-auth(:8401)
+  #
+  #  【与 mall-admin 的关系】
+  #  mall-auth 专门处理认证逻辑，mall-admin 专门处理业务逻辑。
+  #  Gateway 的白名单配置中，/mall-auth/** 不需要鉴权（任何人都可以访问登录接口）。
+  #  而 /mall-admin/** 需要先通过 mall-auth 登录获取 Token。
+  # ------------------------------------------------------------
   mall-auth:
     image: ${ACR_REGISTRY:-crpi-9lhedueyyvqzcyrk.cn-guangzhou.personal.cr.aliyuncs.com}/${ACR_NAMESPACE:-mall-swarm-202606}/mall-swarm-202606:mall-auth-latest
     container_name: mall-auth
     restart: always
     environment:
       TZ: Asia/Shanghai
+      # mall-auth 比较轻量，内存分配可以小一些
       JAVA_OPTS: "-Xms192m -Xmx320m -XX:+UseG1GC"
       SPRING_PROFILES_ACTIVE: prod
+      # Nacos 地址（公网 IP）
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
       SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: ${NACOS_ADDR:-106.53.106.41:8848}
+      # 注册到 Nacos 的公网 IP
       SPRING_CLOUD_NACOS_DISCOVERY_IP: 106.53.132.192
-      # 中间件地址（环境变量直传，使用 Docker 容器名通信）
+      # Redis 连接（使用容器名，同一服务器）
       SPRING_DATA_REDIS_HOST: mall-redis
       SPRING_DATA_REDIS_PORT: "6379"
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-Mall@2026_redis}
@@ -115,6 +241,7 @@ services:
     volumes:
       - ${LOG_DIR:-/root/projects/mall-swarm/logs}/auth:/var/logs
     depends_on:
+      # mall-auth 只依赖 Redis（不直接连 MySQL）
       redis:
         condition: service_healthy
     healthcheck:
